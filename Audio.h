@@ -3,6 +3,7 @@
 #include <memory>
 #include <string>
 #include <iostream>
+#include <cstdint>
 
 using namespace std;
 
@@ -11,7 +12,11 @@ namespace MSHIMA001{
 template<typename T>
 class Audio{
    private:
-      int rate;
+      int samplingRate;//eg 44100
+      int bitcount;//8 or 16
+      int channels;
+      
+      
       vector<T> data;
  
    public:
@@ -22,7 +27,7 @@ class Audio{
         bool operator==(const Audio& N);
    
 
-      Audio(int w, int h, unsigned char* buffer); // default constructor - define in .cpp
+     // Audio(int w, int h, unsigned char* buffer); // for unit tests.
       Audio( string fileName);
       ~Audio(); // destructor - define in .cpp file
    
@@ -97,6 +102,11 @@ class Audio{
       Audio operator|(const Audio& N );
       Audio operator^(const Audio& N );
       Audio operator*(pair<float, float> F);
+      
+      Audio sum(Audio& N);
+      Audio rev();
+      double rms(Audio& N);
+      Audio norm(pair<float, float> f);
    
    
          

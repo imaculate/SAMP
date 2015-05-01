@@ -4,22 +4,20 @@
 #include <sstream>
 #include <iostream>
 #include <cstlib>
-#include <memory>
-#include "Audio.h"
+#include <cstdint>
+#include <algorithm>
+#include <utility>
+#include <vector>
+
 
 
 using namespace std;
 namespace MSHIMA001{
 
 
-Audio::Audio(int w, int h, unsigned char* buffer):width(w), height(h){
-   
-  
-   
-   data.reset(buffer);
- 
-   
-}
+/*Audio::Audio(int w, int h, unsigned char* buffer):width(w), height(h){
+      
+}*/
 
 
       
@@ -35,16 +33,6 @@ Audio::Audio( string fileName){
 
 Audio::~Audio(){ // destructor
 
-      
-      
-      
-   data = nullptr;
-   height = width = 0;
-      
-      
-   
-
-   
    
 }
    
@@ -183,48 +171,41 @@ cout<<"in move op"<<endl;
    //method to read input files
 bool  Audio::load(std::string fileName){
 
-   int  w, h;
+   std::vector<std::string> x = split(fileName, '_');
+   int len  = x.size();
+   
+   if(x[len-1].at(0)=='s'){
+      channels = 2;
+      
+   }else{
+      channels = 1;
+   }
+   
+   string s = (x[len-2]);
+   s = s.substr(0, s.find("b"));  
+   istringstream ss(s);
+   ss >> bitcount;
+   
+    string s1 = (x[len-4]);
+    istringstream ss1(s1);
+    ss1 >> samplingRate;
+    
+    //initiate vector;
+    if(bitCount == 8){
+      data = vector<int8_t>();
+    }
+   
+   
+   
  
    ifstream file(fileName , ios::in |ios::binary);
-   string line;
+   if(file){
+     
    
-   if (file.is_open()) {
-      getline (file,line);
-      
    
-      cout<<"reading header info"<<endl;
-      while(line.compare("255")!=0){
-        
-         if(line.at(0)!='#'){
+     
          
-            
-            if(line.compare("P5")!=0){
-               cout<<line<<endl;
-               istringstream iss(line);
-            
-               iss >> h;
-               iss >> w;
-            
-               width = w;
-               height =  h;
-            }
-            
-         }
-         getline(file ,line);
-         
-         cout<<line<<endl;
-      }
-      
-      cout<<"height "<<height<<"width "<< width<<endl;
-      int64_t l = h*w;
-      cout<<l<<endl;
-        
-      data.reset(new unsigned char[width*height]);
-  //    unsigned char buffer[l];
    
-     skipws(file);
-         
-      cout<<"Done with header info"<<endl;
       file.read((char*)&data[0], w*h);
         if (file)
       std::cout << "all characters read successfully."<<file.gcount()<<endl;
@@ -350,6 +331,15 @@ Audio operator*(pair<float, float> F){
 
 }
 
+Audio sum(Audio& N){
+}
+Audio rev(){
+}
+double rms(Audio& N){
+}
+Audio norm(pair<float, float> f){
+}
+
 ostream& operator<<(ostream& head, const Audio& N ){
 
 
@@ -471,4 +461,21 @@ bool MSHIMA001::Audio::operator==(const Audio& N) {
    return true;
 }
    
+}
+
+//helper methods to split a vector.
+std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
+    std::stringstream ss(s);
+    std::string item;
+    while (std::getline(ss, item, delim)) {
+        elems.push_back(item);
+    }
+    return elems;
+}
+
+
+std::vector<std::string> split(const std::string &s, char delim) {
+    std::vector<std::string> elems;
+    split(s, delim, elems);
+    return elems;
 }
