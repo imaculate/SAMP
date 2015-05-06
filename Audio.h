@@ -15,6 +15,7 @@ class Audio{
       int samplingRate;//eg 44100
       int bitcount;//8 or 16
       int channels;
+      int length; //length of file.
       
       
       vector<T> data;
@@ -28,7 +29,10 @@ class Audio{
    
 
      // Audio(int w, int h, unsigned char* buffer); // for unit tests.
+     Audio()
       Audio( string fileName);
+      Audio temp(int chan, int bit, int samp, vector<T> t );
+
       ~Audio(); // destructor - define in .cpp file
    
    //copy constructor
@@ -45,7 +49,8 @@ class Audio{
       Audio& operator=(Audio&& N);
    
    //method to read input files
-   Audio operator!();
+  
+  
       bool  load(std::string fileName);
       void save(std::string fileName );
       
