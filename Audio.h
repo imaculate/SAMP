@@ -110,8 +110,10 @@ class Audio{
       
       Audio sum(Audio& N);
       Audio rev();
-      double rms(Audio& N);
+      double rms();
       Audio norm(pair<float, float> f);
+      void fadein(double n);
+      void fadeout(double n);
    
    
          
@@ -125,6 +127,11 @@ class Audio{
          
      
      };
+     template<typename T, int channels>
+     class Normalise{
+         
+     
+     }
      
      
      //template<> class Audio<pair<T,T>>

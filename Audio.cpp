@@ -8,6 +8,8 @@
 #include <algorithm>
 #include <utility>
 #include <vector>
+#include <numeric>
+#include <math.h>
 
 
 
@@ -279,40 +281,78 @@ namespace MSHIMA001{
         return temp;
         
    }
-   Audio rev(){
+   Audio rev()
+   {  
+       vector<T> result(length);
+       copy(data.begin(), data.end(), result.begin());
+       reverse(result.begin(), result.end());
+       Audio<T,1> temp(channels, bitcount, samplingRate, result);
+      return temp;
+      
       
    }
-   double rms(Audio& N){
+   double rms(){
+      long product = std::accumulate(data.begin(), data.end(), 0, [](x){return x*x});
+      double rms = sqrt(product/length);
+      return rms ;
+     
+      Audio<T,1> temp(channels, bitcount, samplingRate, result);
+      return temp;
+
+      
    }
    Audio norm(pair<float, float> f){
+      float  out = f.first;
+      double rms = this->rms();
+      vector<T> result(length);
+      
+      Normalise<T,1> functor(out); 
+      transform(data.begin(), data.end(), result.begin(), functor);
+      Audio<T,1> temp(channels, bitcount, samplingRate, result);
+      return temp;
+
+
+      
+      
    }
+   
+   /*void fadein(double n){
+    
+ 
+      for_each(data.begin(), data.end(), result.begin(),[samplingRate, n](x){return  } );
+         
+   }
+
+  
+      void fadeout(double n){
+            
+      
+      }*/
 
    ostream& operator<<(ostream& head, const Audio& N ){
    
    
+
       if(head){
-         head<<"P5"<<endl;
-         head<<"# this is result image saved!"<<endl;
-         head<< N.height<< " "<< N.width<< endl;
-         head<<"255"<<endl;
+         
       
-      
-       
-         unsigned char byte;// = data.get();
-         for(auto i=N.begin();i!=N.end();++i){
-         //cout<<int(*i)<<" ";
+  
+         T unit;// 
+         for(auto i=this->begin();i!=end();++i){
+         
             byte  = *i;
-            head.write((char*)&byte,1);
+            head.write((char*)&unit,1);
          }
       
       
       
-      
-         return head;
+         head.close();
       }
       else{
          cout<<"Unable to open file"<<endl;
       }
+      
+      return head;
    
    
    
@@ -321,86 +361,42 @@ namespace MSHIMA001{
    
    }
    istream& operator>>( istream& file,  Audio& N ){
-      string line;
-      int h,w;
-   
-      if (file) {
-         getline (file,line);
-      
-      
-         cout<<"reading header info"<<endl;
-         while(line.compare("255")!=0){
+
+      if(file){
+  
+         file.seekg (0, file.end);
+         int size = file.tellg();
+         file.seekg (0, file.beg);
          
-            if(line.at(0)!='#'){
-            
-            
-               if(line.compare("P5")!=0){
-                  cout<<line<<endl;
-                  istringstream iss(line);
-               
-                  iss >> h;
-                  iss >> w;
-               
-                  N.width = w;
-                  N.height =  h;
-               }
-            
-            }
-            getline(file ,line);
+          length = size/sizeof(T);
+         N.data.resize(length);
+         N.length = length;
          
-            cout<<line<<endl;
-         }
-      
-         cout<<"height "<<N.height<<"width "<< N.width<<endl;
-         int64_t l = h*w;
-         cout<<l<<endl;
-        
-         N.data.reset(new unsigned char[N.width*N.height]);
-      //    unsigned char buffer[l];
-      
-         skipws(file);
-         
-         cout<<"Done with header info"<<endl;
-         file.read((char*)(&(N.data[0])), w*h);
+         file.read((char*)&N.data[0], length);
          if (file)
             std::cout << "all characters read successfully."<<file.gcount()<<endl;
          else
             std::cout << "error: only " << file.gcount() << " could be read"<<endl;
          
          
-       
-         
-      //   data.reset(buffer);
-      
-      
+    
+         file.close();
         
-          
-      
         
-         return file;
         
       
-      }
-      else{
+      }else{
          cout<<"Unable to open file, ensure correct filename"<<endl;	
-         return file;	
-      }
-   
-               
-   
-      
-              
-   
-   
-   
-   
+         	
+      } 
+      return file;  
    }
 
    bool MSHIMA001::Audio::operator==(const Audio& N) {
-      if(sizeof(N.data.get())!= sizeof(data.get()))
+      if(length!=N.length| samplingRate != N.samplingRate | bitcount != N.bitcount| channels!= N.channels)
          return false;
       
-      for(int i = 0; i< sizeof(data.get()); i++){
+      for(int i = 0; i< length; i++){
          if(data[i]!= N.data[i])
             return false;
       
@@ -410,19 +406,3 @@ namespace MSHIMA001{
    
 }
 
-//helper methods to split a vector.
-std::vector<std::string> &split(const std::string &s, char delim, std::vector<std::string> &elems) {
-   std::stringstream ss(s);
-   std::string item;
-   while (std::getline(ss, item, delim)) {
-      elems.push_back(item);
-   }
-   return elems;
-}
-
-
-std::vector<std::string> split(const std::string &s, char delim) {
-   std::vector<std::string> elems;
-   split(s, delim, elems);
-   return elems;
-}
