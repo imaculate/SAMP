@@ -192,7 +192,7 @@ namespace MSHIMA001{
          cerr<< "Can't add these arrs, dimensions don't match"<<endl;
          return *this;
       }
-      Audio temp(*this);//copy constructor
+      Audio temp<T,1>(*this);//copy constructor
    
       cout<<"iterators creating"<<endl;
       Audio::Iterator beg = temp.begin(), end = temp.end();
@@ -229,7 +229,7 @@ namespace MSHIMA001{
       vector<T> result(2*length);
       copy ( data.begin(), data.end(), result.begin() );
       copy(N.data.begin(), N.data.end(), back_inserter(result));
-      Audio temp(channels, bitcount, samplingRate, result);
+      Audio<T,1> temp(channels, bitcount, samplingRate, result);
    
     
    
@@ -242,19 +242,45 @@ namespace MSHIMA001{
    
    
    }
-   Audio operator^(const Audio& N ){
+   Audio operator^(pair<int, int> N ){
+      int m = N.first;
+      int n = N.second;
       
-   
-   
+      vector<T> result(length + m - n-1);
+      copy(data.begin() , data.begin()+ m, result.begin());
+      copy(data.begin()+ n+1, data.end(), back_inserter(result));
+      
+       Audio<T,1> temp(channels, bitcount, samplingRate, result);
+      return temp;
+      
+        
+        
    }
    Audio operator*(pair<float, float> F){
-   
+      float factor = F.first;
+      
+        vector<T> result(length);
+      transform(data.begin(), data.end(), result.begin(), [factor](x){return (int)(x*factor)});
+      Audio<T, 1> temp(channels, bitcount, samplingRate, result);
+      return temp;
+      
    
    }
 
-   Audio sum(Audio& N){
+   Audio add(Audio& N, pair<int, int>f){
+        int m = N.first;
+        int n = N.second;
+        vector<T> result(length);
+        
+        copy(N.begin()+m, N.begin() + n+1, result.begin()+m);
+        
+        Audio<T,1> temp(channels, bitcount, samplingRate, result);
+        temp = *this + temp;
+        return temp;
+        
    }
    Audio rev(){
+      
    }
    double rms(Audio& N){
    }

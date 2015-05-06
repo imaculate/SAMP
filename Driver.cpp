@@ -336,7 +336,7 @@ int main(int argc, char**  argv) {
          bool outfile = string(argv[7]).compare("-o")==0;
          string stra= string(argv[(outfile?12:10)]);
          
-         float r1, r2;
+         int r1, r2;
          istringstream ss1(string(argv[10]));
          ss1>>r1;
          istringstream ss2(string(argv[11]));
@@ -372,7 +372,7 @@ int main(int argc, char**  argv) {
             
          }             
 
-         pair<float, float> f = make_pair(r1, r2);
+         pair<int, int> f = make_pair(r1, r2);
         
          
             
