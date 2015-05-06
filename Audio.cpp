@@ -25,8 +25,7 @@ namespace MSHIMA001{
 
 Audio::Audio( string fileName){
    load(fileName);
-   
-      
+    
       
 }
 
@@ -171,32 +170,7 @@ cout<<"in move op"<<endl;
    //method to read input files
 bool  Audio::load(std::string fileName){
 
-   std::vector<std::string> x = split(fileName, '_');
-   int len  = x.size();
-   
-   if(x[len-1].at(0)=='s'){
-      channels = 2;
       
-   }else{
-      channels = 1;
-   }
-   
-   string s = (x[len-2]);
-   s = s.substr(0, s.find("b"));  
-   istringstream ss(s);
-   ss >> bitcount;
-   
-    string s1 = (x[len-4]);
-    istringstream ss1(s1);
-    ss1 >> samplingRate;
-    
-    //initiate vector;
-    if(bitCount == 8){
-      data = vector<int8_t>();
-    }
-   
-   
-   
  
    ifstream file(fileName , ios::in |ios::binary);
    if(file){

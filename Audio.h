@@ -9,7 +9,7 @@ using namespace std;
 
 
 namespace MSHIMA001{
-template<typename T>
+template<typename T, int channels>
 class Audio{
    private:
       int samplingRate;//eg 44100
@@ -120,6 +120,7 @@ class Audio{
          
      
      };
+     
      
      //template<> class Audio<pair<T,T>>
      }

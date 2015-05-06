@@ -42,7 +42,11 @@ int main(int argc, char**  argv) {
          string stra= string(argv[(outfile?10:8)]);
          string strb = string(argv[(outfile?11:9)]);
          cout<<"Creating first audio"<<endl;
-         Audio a(stra);
+         vector<int> details  = loadFile(argv);
+         if(details(2)==1){
+            
+         }
+         Audio<> a(stra);
          
          cout<<"Creating second audio"<<endl;
          cout<<strb<<endl;
@@ -303,4 +307,32 @@ int main(int argc, char**  argv) {
   
    
      
-}  
+}
+
+"samp -r sampleRateInHz -b bitCount -c noChannels [-o outFileName] [<ops>] Soundfile [SoundFile2]"
+vector<int> loadfile(char*[] args){
+   vector<int> data(3);
+   int sampleRate, bitCount, noChannels;
+   
+   string samp = string(args[2]);
+   istringstream ss(samp);
+   ss >> sampleRate;
+   data.push_pack(sampleRate);
+   
+   string bits = string(args[4]);
+   istringstream ss1(bits);
+   ss1 >> bitCount;
+   data.push_pack(bitCount);
+   
+   
+   string chan  = string(args[6]);
+   istringstream ss2(chan);
+   ss2 >>  noChannels;
+   data.push_pack(noChannels);
+   
+   return data;
+
+   
+   
+   
+}
