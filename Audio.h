@@ -1,9 +1,18 @@
 #ifndef AUDIO_H
 #define AUDIO_H
-#include <memory>
 #include <string>
-#include <iostream>
 #include <cstdint>
+#include <string>
+#include <fstream>
+#include <sstream>
+#include <iostream>
+#include <cstlib>
+#include <cstdint>
+#include <algorithm>
+#include <utility>
+#include <vector>
+#include <numeric>
+#include <math.h>
 
 using namespace std;
 
@@ -54,54 +63,10 @@ class Audio{
       bool  load(std::string fileName);
       void save(std::string fileName );
       
-      class Iterator{
-      private:
-         T* ptr;
-         
-      // grant private access to Audio class functions
-         friend class Audio;
-      // construct only via Audio class (begin/end)
-      
-         Iterator(T *p);
-      
-      public:
-       //copy construct is public
-         Iterator(const Iterator& N);
-    
-         // define overloaded ops: *, ++, --, =
-         //destructor
-         ~Iterator();
-         //move constructor
-         Iterator(Iterator&& N); 
-      
-         //assignment operator
-      
-         Iterator& operator=(const Iterator& N );
-         //move assignment operator.
-      
-         Iterator& operator=(Iterator&& N);
-         
-         
-         
-         //++ operator
-         const Iterator& operator ++();
-         const Iterator& operator --();
-          unsigned char& operator *();
-         bool operator !=( const Iterator& N);
-         Iterator&  operator+=(int n);
-         
-        //Iterator&  operator=(int&& N );
-         
-          
-      
-          
-      // other methods for Iterator
-      };
-      
+     
 
    
-      Audio::Iterator begin(void) const; // etc
-      Audio::Iterator end(void) const;
+     
    
       Audio operator+(const Audio& N );
       Audio operator|(const Audio& N );
@@ -112,28 +77,46 @@ class Audio{
       Audio rev();
       double rms();
       Audio norm(pair<float, float> f);
-      void fadein(double n);
-      void fadeout(double n);
-   
-   
-         
-   
-   
-   
-    
-   
-   
-   
+      /*void fadein(double n);
+      void fadeout(double n);*/
+  
+     };
+     
+     template<typename T, int channels>
+     class Normalise{
+         private:
+            float f;
+            T in;
+        public:
+            Normalise(float out):f(out);
+            T operator()();
+            
          
      
      };
-     template<typename T, int channels>
-     class Normalise{
+     
+     
+     
+     
+     
+     
+     template<typename T>
+     class Normalise<2>{
+         private:
+            float f;
+            pair<T,T> in;
+        public:
+            Normalise(float out):f(out);
+            pair<T,T> operator()();
+            
          
      
-     }
-     
-     
+     };
+ 
+
+
+
      //template<> class Audio<pair<T,T>>
+     #include "Audio.cpp"
      }
 #endif
