@@ -43,27 +43,31 @@ int main(int argc, char**  argv) {
          string strb = string(argv[(outfile?11:9)]);
            cout<<"Creating first audio"<<endl;
 
-         if( (string(argv[6]).compare("1")==0  ){
-            if((string(argv[4].compare("8")==0){
+         if( string(argv[6]).compare("1")==0  ){
+            if(string(argv[4]).compare("8")==0){
                    Audio<int8_t, 1> a(stra);
                     Audio<int8_t, 1> b(strb);
                     Audio<int8_t, 1> sum();
+                      sum = a + b;
             }else{
                Audio<int16_t, 1> a(stra);
                 Audio<int16_t, 1> b(strb);
                 Audio<int16_t, 1> sum();
+                  sum = a + b;
                 
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t> a(stra);
                     Audio<int8_t> b(strb);
                     Audio<int8_t> sum();
+                      sum = a + b;
             }else{
                Audio<int16_t> a(stra);
                 Audio<int16_t> b(strb);
                 Audio<int16_t> sum();
+                  sum = a + b;
 
             }
 
@@ -74,7 +78,7 @@ int main(int argc, char**  argv) {
         
         
       
-          sum = a + b;
+        
          cout<<"Done"<<endl;
          string c = string(argv[6]);
          string channels = (c.compare("1")==0)?"mono":"stereo";
@@ -90,8 +94,8 @@ int main(int argc, char**  argv) {
          string stra= string(argv[(outfile?10:8)]);
          string strb = string(argv[(outfile?11:9)]);
          cout<<"Creating first audio"<<endl;
-         if( (string(argv[6]).compare("1")==0  ){
-            if((string(argv[4].compare("8")==0){
+         if( string(argv[6]).compare("1")==0  ){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t, 1> a(stra);
                     Audio<int8_t, 1> b(strb);
                     Audio<int8_t, 1> sum();
@@ -103,7 +107,7 @@ int main(int argc, char**  argv) {
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t> a(stra);
                     Audio<int8_t> b(strb);
                     Audio<int8_t> sum();
@@ -141,27 +145,39 @@ int main(int argc, char**  argv) {
          
        
          cout<<"Creating first audio"<<endl;
-          if( (string(argv[6]).compare("1")==0  ){
-            if((string(argv[4].compare("8")==0){
+          if( string(argv[6]).compare("1")==0  ){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t, 1> a(stra);
                   
                     Audio<int8_t, 1> amp();
+                    pair<float, float> f = make_pair(r1, r2);
+                   amp = a * f;
+
             }else{
                Audio<int16_t, 1> a(stra);
                 
                 Audio<int16_t, 1> amp();
+                pair<float, float> f = make_pair(r1, r2);
+               amp = a * f;
+
                 
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4]).compare("8")==0){
                    Audio<int8_t> a(stra);
                   
                     Audio<int8_t> amp();
+                    pair<float, float> f = make_pair(r1, r2);
+                amp = a * f;
+
             }else{
                Audio<int16_t> a(stra);
                
                 Audio<int16_t> amp();
+                pair<float, float> f = make_pair(r1, r2);
+               amp = a * f;
+
 
             }
 
@@ -169,12 +185,7 @@ int main(int argc, char**  argv) {
          }             
 
          
-         pair<float, float> f = make_pair(r1, r2);
-         
-         
-         
-          amp = a * f;
-         cout<<"Done"<<endl;
+                  cout<<"Done"<<endl;
          string c = string(argv[6]);
          string channels = (c.compare("1")==0)?"mono":"stereo";
          string name = outfile?string(argv[8]):"out";
@@ -197,8 +208,8 @@ int main(int argc, char**  argv) {
          
        
          cout<<"Creating first audio"<<endl;
-          if( (string(argv[6]).compare("1")==0  ){
-            if((string(argv[4].compare("8")==0){
+          if( string(argv[6]).compare("1")==0  ){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t, 1> a(stra);
                     
                     Audio<int8_t, 1> slice();
@@ -210,7 +221,7 @@ int main(int argc, char**  argv) {
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t> a(stra);
                     
                     Audio<int8_t> slice();
@@ -238,7 +249,7 @@ int main(int argc, char**  argv) {
          slice.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
          return 0;
       }
-      else  if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-rev")==0)||string(argv[7]).compare("-rev")==0){
+      else  if(string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-rev")==0)||string(argv[7]).compare("-rev")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
          string stra= string(argv[(outfile?10:8)]);
@@ -260,7 +271,7 @@ int main(int argc, char**  argv) {
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t> a(stra);
                    
                     Audio<int8_t> b();
@@ -288,7 +299,7 @@ int main(int argc, char**  argv) {
          b.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
          return 0;
       }
-      else  if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-rms")==0)||string(argv[7]).compare("-rms")==0){
+      else  if(string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-rms")==0)||string(argv[7]).compare("-rms")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
          string stra= string(argv[(outfile?10:8)]);
@@ -308,7 +319,7 @@ int main(int argc, char**  argv) {
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t> a(stra);
                   
             }else{
@@ -331,7 +342,7 @@ int main(int argc, char**  argv) {
          return 0;
       }
       
-      else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-norm")==0)||string(argv[7]).compare("-norm")==0){
+      else if(string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-norm")==0)||string(argv[7]).compare("-norm")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
          string stra= string(argv[(outfile?12:10)]);
@@ -358,7 +369,7 @@ int main(int argc, char**  argv) {
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t> a(stra);
                     
                     Audio<int8_t> norm();
@@ -388,7 +399,7 @@ int main(int argc, char**  argv) {
          norm.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
          return 0;
       }
-      else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-radd")==0)||string(argv[7]).compare("-radd")==0){
+      else if(string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-radd")==0)||string(argv[7]).compare("-radd")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
          string stra= string(argv[(outfile?12:10)]);
@@ -402,8 +413,8 @@ int main(int argc, char**  argv) {
          
          
        
-          if( (string(argv[6]).compare("1")==0  ){
-            if((string(argv[4].compare("8")==0){
+          if( string(argv[6]).compare("1")==0  ){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t, 1> a(stra);
                     Audio<int8_t, 1> b(strb);
                     Audio<int8_t, 1> sum();
@@ -415,7 +426,7 @@ int main(int argc, char**  argv) {
 
             }
          }else{
-            if((string(argv[4].compare("8")==0){
+            if(string(argv[4].compare("8")==0){
                    Audio<int8_t> a(stra);
                     Audio<int8_t> b(strb);
                     Audio<int8_t> sum();

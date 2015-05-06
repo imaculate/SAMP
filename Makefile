@@ -5,7 +5,7 @@ samp:  Audio.o  Driver.o
 	$(CC) $(CCFLAGS) Driver.o Audio.o    -o samp
    
 
-Audio.o : Audio.cpp Audio.h  
+Audio.o :  Audio.cpp Audio.h
 	$(CC) $(CCFLAGS) -o Audio.o -c Audio.cpp 
 
 

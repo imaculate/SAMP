@@ -6,19 +6,27 @@
 #include <fstream>
 #include <sstream>
 #include <iostream>
-#include <cstlib>
-#include <cstdint>
 #include <algorithm>
 #include <utility>
 #include <vector>
 #include <numeric>
-#include <math.h>
+
 
 using namespace std;
 
 
 namespace MSHIMA001{
-template<typename T, int channels>
+
+template <typename T, int chans>
+class Audio;
+
+template <typename T, int chans>
+ostream& operator<<(ostream& head, const Audio<T,chans>& N );
+
+template <typename T, int chans>
+istream& operator>>( istream& file,  Audio<T,chans>& N );
+
+template<typename T, int chans>
 class Audio{
    private:
       int samplingRate;//eg 44100
@@ -30,17 +38,18 @@ class Audio{
       vector<T> data;
  
    public:
-      friend ostream& operator<<(ostream& head, const Audio& N );
-     
-      friend istream& operator>>( istream& file,  Audio& N );
       
-        bool operator==(const Audio& N);
+      friend ostream& operator<< <T, chans>(ostream& head, const Audio<T,chans>& N );
+     
+      
+      friend istream& operator>><T, chans>( istream& file,  Audio<T,chans>& N );
+     
    
 
      // Audio(int w, int h, unsigned char* buffer); // for unit tests.
-     Audio()
+     Audio();
       Audio( string fileName);
-      Audio temp(int chan, int bit, int samp, vector<T> t );
+      Audio(int chan, int bit, int samp, vector<T> t );
 
       ~Audio(); // destructor - define in .cpp file
    
@@ -62,18 +71,15 @@ class Audio{
   
       bool  load(std::string fileName);
       void save(std::string fileName );
-      
-     
 
-   
-     
-   
       Audio operator+(const Audio& N );
       Audio operator|(const Audio& N );
-      Audio operator^(const Audio& N );
+      Audio operator^(pair<int, int> N );
       Audio operator*(pair<float, float> F);
+      bool operator==(const Audio& N);
+      Audio add(Audio& N, pair<int, int>f);
       
-      Audio sum(Audio& N);
+      
       Audio rev();
       double rms();
       Audio norm(pair<float, float> f);
@@ -88,8 +94,8 @@ class Audio{
             float f;
             T in;
         public:
-            Normalise(float out):f(out);
-            T operator()();
+            Normalise(float out);
+            T operator()(void);
             
          
      
@@ -100,7 +106,7 @@ class Audio{
      
      
      
-     template<typename T>
+     /*template<typename T>
      class Normalise<2>{
          private:
             float f;
@@ -111,12 +117,12 @@ class Audio{
             
          
      
-     };
+     };*/
  
 
 
 
      //template<> class Audio<pair<T,T>>
-     #include "Audio.cpp"
-     }
+
+ }
 #endif
