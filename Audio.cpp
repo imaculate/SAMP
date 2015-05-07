@@ -51,8 +51,7 @@ namespace MSHIMA001{
    Audio<T,chans>::Audio(Audio<T, chans>&& N):channels(N.channels), bitcount(N.bitcount), samplingRate(N.samplingRate), length(N.length), data(N.data){
       cout<<"In move "<<endl;
       N.channels = N.bitcount = N.samplingRate = 0;
-      data= NULL;
-      
+     
    
    }
    
@@ -187,8 +186,8 @@ namespace MSHIMA001{
       Audio<T,chans> temp(*this);//copy constructor
    
       cout<<"iterators creating"<<endl;
-      typename vector<T>::iterator beg = temp.data.begin(), end = temp.data.end();
-      typename vector<T>::iterator inStart = N.data.begin(), inEnd = N.data.end();
+      auto beg = temp.data.begin(), end = temp.data.end();
+      auto inStart = N.data.begin(), inEnd = N.data.end();
       cout<<"iterators created"<<endl;
    
       while ( beg != end) { 
@@ -287,7 +286,10 @@ namespace MSHIMA001{
    }
    template<typename T, int chans>
    double Audio<T,chans>::rms(){
-      long product = std::accumulate(data.begin(), data.end(), 0, [](T x){return x*x;});
+      long product;
+      for(auto i = 0; i<length; i++){
+         product += (long)(data[i]) *  (long)(data[i]);
+      }
       double rms = sqrt(product/length);
       return rms ;
      
@@ -457,7 +459,7 @@ namespace MSHIMA001{
    Audio<T,2>::Audio(Audio<T,2>&& N):channels(N.channels), bitcount(N.bitcount), samplingRate(N.samplingRate), length(N.length), data(N.data){
       cout<<"In move "<<endl;
       N.channels = N.bitcount = N.samplingRate = 0;
-      data= NULL;
+     
       
    
    }
@@ -535,12 +537,14 @@ namespace MSHIMA001{
          
          length = size/(2*sizeof(T));
          data.resize(length);
-         
+            pair<T,T> pod;
          //file.read((char*)&data[0], length);
          for(int i = 0; i< length; i++){
             T l,r;
             file>>l>>r;
-            data.push_pack(make_pair(l,r));
+            pod = make_pair(l,r);
+            
+            data.push_back(pod);
          }
                   
       
@@ -594,13 +598,13 @@ namespace MSHIMA001{
       Audio<T,2> temp(*this);//copy constructor
    
       cout<<"iterators creating"<<endl;
-      typename vector<pair<T,T>>::iterator beg = temp.data.begin(), end = temp.data.end();
-      typename vector<pair<T,T>>::iterator inStart = N.data.begin(), inEnd = N.data.end();
+      auto beg = temp.data.begin(), end = temp.data.end();
+      auto inStart = N.data.begin(), inEnd = N.data.end();
       cout<<"iterators created"<<endl;
    
       while ( beg != end) { 
       
-         int check = (*beg.first + *inStart.first);
+         int check = ((*beg).first + (*inStart).first);
          if(check> (1<<sizeof(T))){
             check = (1<<sizeof(T)) ;
          }
@@ -608,7 +612,7 @@ namespace MSHIMA001{
       
          (*beg).first = check; 
          
-          check = (*beg.second + *inStart.second);
+          check = ((*beg).second + (*inStart).second);
          if(check> (1<<sizeof(T))){
             check = (1<<sizeof(T)) ;
          }
@@ -697,10 +701,17 @@ namespace MSHIMA001{
    }
    template<typename T >
    pair<double,double> Audio<T,2>::rms(){
-       pair<long, long> product = std::accumulate(data.begin(), data.end(), 0, [](pair<T,T> x){return make_pair(x.first*x.first, x.second*x.second);});
-      double rms1 = sqrt(product.first/length);
-      double rms2 = sqrt(product.second/length);
-      return make_pair<rms1, rms2> ;
+     
+     long product1, product2;
+      for(auto i = 0; i<length; i++){
+         product1 += (long)(data[i].first) *  (long)(data[i].first);
+         product2 += (long)(data[i].second) *  (long)(data[i].second);
+      }
+       
+      double rms1 = sqrt(product1/(double)length);
+      double rms2 = sqrt(product1/(double)length);
+      pair<double, double> ans = make_pair(rms1, rms2);
+      return ans ;
      
       
       
@@ -709,10 +720,10 @@ namespace MSHIMA001{
    template<typename T >
    Audio<T,2> Audio<T,2>::norm(pair<float, float> f){
       
-      double rms = this->rms();
+      pair<double,double> rms = this->rms();
       vector<pair<T,T>> result(length);
       
-      Normalise<T,2> functor(f); 
+      Normalise<T,2> functor(f, rms); 
       transform(data.begin(), data.end(), result.begin(), functor);
       Audio<T,2> temp(channels, bitcount, samplingRate, result);
       return temp;
@@ -824,11 +835,11 @@ namespace MSHIMA001{
    
    template<typename T >
      pair<T,T> Normalise<T,2>::operator()(pair<T,T> in){
-      long check = in.first * f.first ;
+      long check = (long)(in.first * f.first/rms.first );
       if(check > (1<<sizeof(T))){
          check = (1<<sizeof(T));
       }
-      long check1 = in.second * f.second ;
+      long check1 = (long)(in.second * f.second /rms.second);
       if(check1 > (1<<sizeof(T))){
          check1 = (1<<sizeof(T));
       }

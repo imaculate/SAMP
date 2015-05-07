@@ -176,9 +176,10 @@ class Audio<T,2>{
      class Normalise<T,2>{
          private:
             pair<float,float> f;
+            pair<double, double> rms;
           
         public:
-            Normalise(pair<float, float> out):f(out){};
+            Normalise(pair<float, float> out, pair<double, double> r ):f(out),rms(r){};
             pair<T,T> operator()(pair<T,T> in);
             
          

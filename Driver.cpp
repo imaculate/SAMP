@@ -390,15 +390,14 @@ int main(int argc, char**  argv) {
          }else{
             if(string(argv[4]).compare("8")==0){
                    Audio<int8_t,2> a(stra);
-                   double b = a.rms();
-         cout<< "The rms of audio file is " << b <<endl;
-         
-         return 0;
+                     pair<double, double> b = a.rms();
+         cout<< "The rms of audio file is :Left: " << b.first <<" Second:"<<b.second <<endl;
+                  return 0;
                   
             }else{
                Audio<int16_t,2> a(stra);
-               double b = a.rms();
-         cout<< "The rms of audio file is " << b <<endl;
+               pair<double, double> b = a.rms();
+         cout<< "The rms of audio file is :Left: " << b.first <<" Second:"<<b.second <<endl;
          
          return 0;
            
