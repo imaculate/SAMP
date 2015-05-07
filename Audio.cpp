@@ -28,6 +28,7 @@ namespace MSHIMA001{
    template<typename T, int chans>
    Audio<T,chans>::Audio(int chan, int bit, int samp, vector<T> t):channels(chan), bitcount(bit), samplingRate(samp), data(t){
       length = t.size();
+      cout<<"In constructor"<<endl;
    }
    template<typename T, int chans>
    Audio<T,chans>::~Audio(){ // destructor
@@ -90,6 +91,7 @@ namespace MSHIMA001{
    //method to read input files
    template<typename T, int chans>
    bool  Audio<T,chans>::load(std::string fileName){
+      cout<<"loading"<<endl;
       //initialise data members
       channels = 1;
       std::string s = fileName;
@@ -104,6 +106,7 @@ namespace MSHIMA001{
    
       
       pos = s.find(delimiter);
+      cout<<"getting sample Rate"<<endl;
       token = s.substr(0, pos);
       istringstream ss(token);
       ss>> samplingRate;
@@ -118,6 +121,7 @@ namespace MSHIMA001{
       token = s.substr(0, pos);
       istringstream ss1(token);
       ss1>>bitcount;
+      cout<<"Creating file stream"<<endl;
       
       ifstream file(fileName , ios::in |ios::binary);
       if(file){
@@ -274,19 +278,19 @@ namespace MSHIMA001{
         
    }
    template<typename T, int chans>
-   Audio<T,chans> Audio<T,chans>::rev()
+   void Audio<T,chans>::rev()
    {  
-      vector<T> result(length);
-      copy(data.begin(), data.end(), result.begin());
-      reverse(result.begin(), result.end());
-      Audio<T,chans> temp(channels, bitcount, samplingRate, result);
-      return temp;
+      cout<<"in reverse"<<endl;
       
+      reverse(data.begin(), data.end());
+      
+      cout<<"reversed!"<<endl;
+    
       
    }
    template<typename T, int chans>
    double Audio<T,chans>::rms(){
-      long product;
+     unsigned long long int product;
       for(auto i = 0; i<length; i++){
          product += (long)(data[i]) *  (long)(data[i]);
       }
@@ -435,6 +439,7 @@ namespace MSHIMA001{
    }
    template<typename T >
    Audio<T,2>::Audio(int chan, int bit, int samp, vector<pair<T,T>> t):channels(chan), bitcount(bit), samplingRate(samp), data(t){
+   cout<<"In constructor"<<endl;
       length = t.size();
    }
    template<typename T >
@@ -500,6 +505,7 @@ namespace MSHIMA001{
    template<typename T >
    bool  Audio<T,2>::load(std::string fileName){
       //initialise data members
+      cout<<"loading"<<endl;
       channels = 1;
       std::string s = fileName;
       std::string delimiter = "_";
@@ -514,6 +520,7 @@ namespace MSHIMA001{
       
       pos = s.find(delimiter);
       token = s.substr(0, pos);
+      cout<<"Obtained sample rate"<<endl;
       istringstream ss(token);
       ss>> samplingRate;
       
@@ -530,18 +537,24 @@ namespace MSHIMA001{
       
       ifstream file(fileName , ios::in |ios::binary);
       if(file){
+         cout<<"File is not null"<<endl;
       
          file.seekg (0, file.end);
          int size = file.tellg();
          file.seekg (0, file.beg);
+         cout<<size<< endl;
          
          length = size/(2*sizeof(T));
+         
+         cout<<"Length is "<<length<<endl;
          data.resize(length);
+         cout<<"Vector resized"<<endl;
             pair<T,T> pod;
          //file.read((char*)&data[0], length);
          for(int i = 0; i< length; i++){
             T l,r;
             file>>l>>r;
+            cout<<"Left " <<(long)l<<"Right "<<(long)r<<endl;
             pod = make_pair(l,r);
             
             data.push_back(pod);
@@ -549,6 +562,7 @@ namespace MSHIMA001{
                   
       
          file.close();
+         cout<<"Done reading file"<<endl;
         
          return true;
         
@@ -689,27 +703,31 @@ namespace MSHIMA001{
         
    }
    template<typename T >
-   Audio<T,2> Audio<T,2>::rev()
+   void Audio<T,2>::rev()
+   
    {  
-      vector<pair<T,T>> result(length);
-      copy(data.begin(), data.end(), result.begin());
-      reverse(result.begin(), result.end());
-      Audio<T,2> temp(channels, bitcount, samplingRate, result);
-      return temp;
-      
+      cout<<"In reverse"<<endl;
+           cout<<"Using reverse algorithm"<<endl;
+      reverse(data.begin(), data.end());
+      cout<<"Reversed!"<<endl;
+            
       
    }
    template<typename T >
    pair<double,double> Audio<T,2>::rms(){
      
-     long product1, product2;
+      unsigned long long int product1=0; 
+       unsigned long long int product2 = 0;
+      cout<<"Length is " << length<<endl;
       for(auto i = 0; i<length; i++){
-         product1 += (long)(data[i].first) *  (long)(data[i].first);
-         product2 += (long)(data[i].second) *  (long)(data[i].second);
+         product1 += (long)(data[i].first) *  (data[i].first);
+         product2 += (long)(data[i].second) *  (data[i].second);
+         cout<<"at position "<<i <<" product is "<<product1<<endl;
+         cout<<(long)(data[i].first)<<endl;
       }
        
       double rms1 = sqrt(product1/(double)length);
-      double rms2 = sqrt(product1/(double)length);
+      double rms2 = sqrt(product2/(double)length);
       pair<double, double> ans = make_pair(rms1, rms2);
       return ans ;
      

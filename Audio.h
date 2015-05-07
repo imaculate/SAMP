@@ -80,7 +80,7 @@ class Audio{
       Audio add(Audio& N, pair<int, int>f);
       
       
-      Audio rev();
+      void rev();
       double rms();
       Audio norm(pair<float, float> f);
       /*void fadein(double n);
@@ -164,7 +164,7 @@ class Audio<T,2>{
       Audio add(Audio& N, pair<int, int>f);
       
       
-      Audio rev();
+      void rev();
       pair<double,double> rms();
       Audio norm(pair<float, float> f);
       /*void fadein(double n);
