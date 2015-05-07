@@ -92,33 +92,99 @@ class Audio{
      class Normalise{
          private:
             float f;
-            T in;
+            
         public:
-            Normalise(float out);
+            Normalise(float out):f(out);
             T operator()(void);
             
          
      
      };
      
+template <typename T >
+class Audio;
+
+template <typename T >
+ostream& operator<<(ostream& head, const Audio<T>& N );
+
+template <typename T >
+istream& operator>>( istream& file,  Audio<T>& N );
+
+template<typename T >
+class Audio<2>{
+   private:
+      int samplingRate;//eg 44100
+      int bitcount;//8 or 16
+      int channels;
+      int length; //length of file.
+      
+      
+      vector<pair<T,T>> data;
+ 
+   public:
+      
+      friend ostream& operator<< <T>(ostream& head, const Audio<T>& N );
      
+      
+      friend istream& operator>><T>( istream& file,  Audio<T>& N );
      
+   
+
+     // Audio(int w, int h, unsigned char* buffer); // for unit tests.
+     Audio();
+      Audio( string fileName);
+      Audio(int chan, int bit, int samp, vector<pair<T,T>> t );
+
+      ~Audio(); // destructor - define in .cpp file
+   
+   //copy constructor
+      Audio(const Audio& N);
+   
+   //move constructor
+      Audio(Audio&& N); 
+   
+   //assignment operator
+   
+      Audio& operator=(const Audio& N );
+   //move assignment operator.
+   
+      Audio& operator=(Audio&& N);
+   
+   //method to read input files
+  
+  
+      bool  load(std::string fileName);
+      void save(std::string fileName );
+
+      Audio operator+(const Audio& N );
+      Audio operator|(const Audio& N );
+      Audio operator^(pair<int, int> N );
+      Audio operator*(pair<float, float> F);
+      bool operator==(const Audio& N);
+      Audio add(Audio& N, pair<int, int>f);
+      
+      
+      Audio rev();
+      double rms();
+      Audio norm(pair<float, float> f);
+      /*void fadein(double n);
+      void fadeout(double n);*/
+  
+     };
      
-     
-     
-     /*template<typename T>
+     template<typename T>
      class Normalise<2>{
          private:
             float f;
             pair<T,T> in;
         public:
-            Normalise(float out):f(out);
-            pair<T,T> operator()();
+            Normalise(pair<float, float> out);
+            pair<T,T> operator()(void);
             
          
      
-     };*/
- 
+     };
+     
 
 
 
