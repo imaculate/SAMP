@@ -71,18 +71,18 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
-                    Audio<int8_t> b(strb);
-                    Audio<int8_t> sum;
+                   Audio<int8_t,2> a(stra);
+                    Audio<int8_t,2> b(strb);
+                    Audio<int8_t,2> sum;
                       sum = a + b;
                          
          sum.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
             cout<<"Done"<<endl;
          return 0;
             }else{
-               Audio<int16_t> a(stra);
-                Audio<int16_t> b(strb);
-                Audio<int16_t> sum;
+               Audio<int16_t,2> a(stra);
+                Audio<int16_t,2> b(strb);
+                Audio<int16_t,2> sum;
                   sum = a + b;
                      
          sum.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
@@ -130,18 +130,18 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
-                    Audio<int8_t> b(strb);
-                    Audio<int8_t> sum;
+                   Audio<int8_t,2> a(stra);
+                    Audio<int8_t,2> b(strb);
+                    Audio<int8_t,2> sum;
                      sum = a | b;
          cout<<"Done"<<endl;
          sum.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
          return 0;
 
             }else{
-               Audio<int16_t> a(stra);
-                Audio<int16_t> b(strb);
-                Audio<int16_t> sum;
+               Audio<int16_t,2> a(stra);
+                Audio<int16_t,2> b(strb);
+                Audio<int16_t,2> sum;
                  sum = a | b;
          cout<<"Done"<<endl;
          sum.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
@@ -203,9 +203,9 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
+                   Audio<int8_t,2> a(stra);
                   
-                    Audio<int8_t> amp;
+                    Audio<int8_t,2> amp;
                     pair<float, float> f = make_pair(r1, r2);
                 amp = a * f;
                 cout<<"Done"<<endl;
@@ -215,9 +215,9 @@ int main(int argc, char**  argv) {
 
 
             }else{
-               Audio<int16_t> a(stra);
+               Audio<int16_t,2> a(stra);
                
-                Audio<int16_t> amp;
+                Audio<int16_t,2> amp;
                 pair<float, float> f = make_pair(r1, r2);
                amp = a * f;
                cout<<"Done"<<endl;
@@ -240,9 +240,12 @@ int main(int argc, char**  argv) {
          string stra= string(argv[(outfile?12:10)]);
          
          int r1, r2;
-         istringstream ss1(string(argv[10]));
+         string s1, s2;
+         s1 = string(argv[10]);
+         istringstream ss1(s1);
          ss1 >> r1;
-         istringstream ss2(string(argv[11]));
+         s2 = string(argv[11]);
+         istringstream ss2(s2);
          ss2 >> r2;
          
                   pair<int, int> f = make_pair(r1, r2);
@@ -257,7 +260,7 @@ int main(int argc, char**  argv) {
             if(string(argv[4]).compare("8")==0){
                    Audio<int8_t, 1> a(stra);
                     
-                    Audio<int8_t, 1> slice();
+                    Audio<int8_t, 1> slice;
                     
          slice = a ^f;
          cout<<"Done"<<endl; 
@@ -266,7 +269,7 @@ int main(int argc, char**  argv) {
             }else{
                Audio<int16_t, 1> a(stra);
                 
-                Audio<int16_t, 1> slice();
+                Audio<int16_t, 1> slice;
                 
          slice = a ^f;
          cout<<"Done"<<endl; 
@@ -277,18 +280,18 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
+                   Audio<int8_t,2> a(stra);
                     
-                    Audio<int8_t> slice();
+                    Audio<int8_t,2> slice;
                     
          slice = a ^f;
          cout<<"Done"<<endl; 
          slice.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
          return 0;
             }else{
-               Audio<int16_t> a(stra);
+               Audio<int16_t,2> a(stra);
                 
-                Audio<int16_t> slice();
+                Audio<int16_t,2> slice;
                 
          slice = a ^f;
          cout<<"Done"<<endl; 
@@ -335,17 +338,17 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
+                   Audio<int8_t,2> a(stra);
                    
-                    Audio<int8_t> b;
+                    Audio<int8_t,2> b;
                      b = a.rev();
    b.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
          cout<<"Done"<<endl;
          return 0;
             }else{
-               Audio<int16_t> a(stra);
+               Audio<int16_t,2> a(stra);
                 
-                Audio<int16_t> b;
+                Audio<int16_t,2> b;
                  b = a.rev();
    b.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
          cout<<"Done"<<endl;
@@ -386,14 +389,14 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
+                   Audio<int8_t,2> a(stra);
                    double b = a.rms();
          cout<< "The rms of audio file is " << b <<endl;
          
          return 0;
                   
             }else{
-               Audio<int16_t> a(stra);
+               Audio<int16_t,2> a(stra);
                double b = a.rms();
          cout<< "The rms of audio file is " << b <<endl;
          
@@ -452,9 +455,9 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
+                   Audio<int8_t,2> a(stra);
                     
-                    Audio<int8_t> norm;
+                    Audio<int8_t,2> norm;
                     norm = a.norm(f);
          cout<<"Done"<<endl;
 
@@ -462,9 +465,9 @@ int main(int argc, char**  argv) {
          return 0;
 
             }else{
-               Audio<int16_t> a(stra);
+               Audio<int16_t,2> a(stra);
               
-                Audio<int16_t> norm;
+                Audio<int16_t,2> norm;
                 norm = a.norm(f);
          cout<<"Done"<<endl;
 
@@ -485,9 +488,12 @@ int main(int argc, char**  argv) {
          string strb = string(argv[(outfile?13:11)]);
          
          float r1, r2;
-         istringstream ss1(string(argv[10]));
+         string s1, s2;
+         s1 = string(argv[10]);
+         istringstream ss1(s1);
          (ss1)>>(r1);
-         istringstream ss2(string(argv[11]));
+         s2 = string(argv[11]);
+         istringstream ss2(s2);
          (ss2)>>(r2);
          pair<float, float> f = make_pair(r1, r2);
 
@@ -525,9 +531,9 @@ int main(int argc, char**  argv) {
             }
          }else{
             if(string(argv[4]).compare("8")==0){
-                   Audio<int8_t> a(stra);
-                    Audio<int8_t> b(strb);
-                    Audio<int8_t> sum;
+                   Audio<int8_t,2> a(stra);
+                    Audio<int8_t,2> b(strb);
+                    Audio<int8_t,2> sum;
                     
           sum  = a.add(b,f);
          
@@ -536,9 +542,9 @@ int main(int argc, char**  argv) {
          return 0;
 
             }else{
-               Audio<int16_t> a(stra);
-                Audio<int16_t> b(strb);
-                Audio<int16_t> sum;
+               Audio<int16_t,2> a(stra);
+                Audio<int16_t,2> b(strb);
+                Audio<int16_t,2> sum;
                 
           sum  = a.add(b,f);
          

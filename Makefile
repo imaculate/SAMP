@@ -1,15 +1,14 @@
 CC=g++
 CCFLAGS=-std=c++11
 
-samp:  Audio.o  Driver.o 
-	$(CC) $(CCFLAGS) Driver.o Audio.o    -o samp
+samp:   Driver.o 
+	$(CC) $(CCFLAGS) Driver.o  -o samp
    
 
-Audio.o :  Audio.cpp Audio.h
-	$(CC) $(CCFLAGS) -o Audio.o -c Audio.cpp 
 
 
-Driver.o : Driver.cpp 
+
+Driver.o : Driver.cpp Audio.h Audio.cpp
 	$(CC) $(CCFLAGS) -o Driver.o -c Driver.cpp
 
 test: Tests.o 

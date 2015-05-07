@@ -94,24 +94,24 @@ class Audio{
             float f;
             
         public:
-            Normalise(float out):f(out);
-            T operator()(void);
+            Normalise(float out):f(out){};
+            T operator()(T in);
             
          
      
      };
      
 template <typename T >
-class Audio;
+class Audio<T,2>;
 
 template <typename T >
-ostream& operator<<(ostream& head, const Audio<T>& N );
+ostream& operator<<(ostream& head, const Audio<T,2>& N );
 
 template <typename T >
-istream& operator>>( istream& file,  Audio<T>& N );
+istream& operator>>( istream& file,  Audio<T,2>& N );
 
 template<typename T >
-class Audio<2>{
+class Audio<T,2>{
    private:
       int samplingRate;//eg 44100
       int bitcount;//8 or 16
@@ -123,10 +123,10 @@ class Audio<2>{
  
    public:
       
-      friend ostream& operator<< <T>(ostream& head, const Audio<T>& N );
+      friend ostream& operator<< <T,2>(ostream& head, const Audio<T,2>& N );
      
       
-      friend istream& operator>><T>( istream& file,  Audio<T>& N );
+      friend istream& operator>><T,2>( istream& file,  Audio<T,2>& N );
      
    
 
@@ -165,7 +165,7 @@ class Audio<2>{
       
       
       Audio rev();
-      double rms();
+      pair<double,double> rms();
       Audio norm(pair<float, float> f);
       /*void fadein(double n);
       void fadeout(double n);*/
@@ -173,13 +173,13 @@ class Audio<2>{
      };
      
      template<typename T>
-     class Normalise<2>{
+     class Normalise<T,2>{
          private:
-            float f;
-            pair<T,T> in;
+            pair<float,float> f;
+          
         public:
-            Normalise(pair<float, float> out);
-            pair<T,T> operator()(void);
+            Normalise(pair<float, float> out):f(out){};
+            pair<T,T> operator()(pair<T,T> in);
             
          
      
@@ -188,7 +188,8 @@ class Audio<2>{
 
 
 
-     //template<> class Audio<pair<T,T>>
+ 
 
  }
+#include "Audio.cpp"
 #endif

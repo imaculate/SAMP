@@ -50,10 +50,10 @@ namespace MSHIMA001{
    template<typename T, int chans>
    Audio<T,chans>::Audio(Audio<T, chans>&& N):channels(N.channels), bitcount(N.bitcount), samplingRate(N.samplingRate), length(N.length), data(N.data){
       cout<<"In move "<<endl;
-         N.channels = N.bitcount = N.samplingRate = 0;
-         data= NULL;
+      N.channels = N.bitcount = N.samplingRate = 0;
+      data= NULL;
       
-  
+   
    }
    
    //assignment operator
@@ -74,7 +74,7 @@ namespace MSHIMA001{
    template<typename T, int chans>
    Audio<T,chans>& Audio<T,chans>::operator=(Audio<T, chans>&& N){
       cout<<"in move op"<<endl;
-    if(this == &N)
+      if(this == &N)
          return *this;
        
       channels = N.channels;
@@ -85,7 +85,7 @@ namespace MSHIMA001{
       N.data.clear();
     
       return *this;
-
+   
    }
    
    //method to read input files
@@ -99,10 +99,10 @@ namespace MSHIMA001{
       size_t pos = 0;
       std::string token;
       
-       pos = s.find(delimiter);
+      pos = s.find(delimiter);
              
       s.erase(0, pos + delimiter.length());//firstpart of name
-
+   
       
       pos = s.find(delimiter);
       token = s.substr(0, pos);
@@ -111,23 +111,23 @@ namespace MSHIMA001{
       
       
       s.erase(0, pos + delimiter.length()); 
-            pos = s.find(delimiter);
+      pos = s.find(delimiter);
              
       s.erase(0, pos + delimiter.length());//signed
       
-        pos = s.find("b");
+      pos = s.find("b");
       token = s.substr(0, pos);
       istringstream ss1(token);
       ss1>>bitcount;
       
       ifstream file(fileName , ios::in |ios::binary);
       if(file){
-  
+      
          file.seekg (0, file.end);
          int size = file.tellg();
          file.seekg (0, file.beg);
          
-          length = size/sizeof(T);
+         length = size/sizeof(T);
          data.resize(length);
          
          file.read((char*)&data[0], length);
@@ -137,13 +137,14 @@ namespace MSHIMA001{
             std::cout << "error: only " << file.gcount() << " could be read"<<endl;
          
          
-    
+      
          file.close();
         
          return true;
         
       
-      }else{
+      }
+      else{
          cout<<"Unable to open file, ensure correct filename"<<endl;	
          return false;	
       }
@@ -156,7 +157,7 @@ namespace MSHIMA001{
       if(head){
          
       
-  
+      
          T unit;// 
          for(auto i=data.begin();i!=data.end();++i){
          
@@ -228,7 +229,7 @@ namespace MSHIMA001{
    
    
       return temp;
-
+   
    
       
    
@@ -243,7 +244,7 @@ namespace MSHIMA001{
       copy(data.begin() , data.begin()+ m, result.begin());
       copy(data.begin()+ n+1, data.end(), back_inserter(result));
       
-       Audio<T,chans> temp(channels, bitcount, samplingRate, result);
+      Audio<T,chans> temp(channels, bitcount, samplingRate, result);
       return temp;
       
         
@@ -253,7 +254,7 @@ namespace MSHIMA001{
    Audio<T,chans> Audio<T,chans>::operator*(pair<float, float> F){
       float factor = F.first;
       
-        vector<T> result(length);
+      vector<T> result(length);
       transform(data.begin(), data.end(), result.begin(), [factor](T x){return (T)(x*factor);});
       Audio<T, chans> temp(channels, bitcount, samplingRate, result);
       return temp;
@@ -262,24 +263,24 @@ namespace MSHIMA001{
    }
    template<typename T, int chans>
    Audio<T,chans> Audio<T,chans>::add(Audio<T, chans>& N, pair<int, int>f){
-        int m = N.first;
-        int n = N.second;
-        vector<T> result(length);
+      int m = f.first;
+      int n = f.second;
+      vector<T> result(length);
         
-        copy(N.begin()+m, N.begin() + n+1, result.begin()+m);
+      copy(N.data.begin()+m, N.data.begin() + n+1, result.begin()+m);
         
-        Audio<T,chans> temp(channels, bitcount, samplingRate, result);
-        temp = *this + temp;
-        return temp;
+      Audio<T,chans> temp(channels, bitcount, samplingRate, result);
+      temp = *this + temp;
+      return temp;
         
    }
    template<typename T, int chans>
    Audio<T,chans> Audio<T,chans>::rev()
    {  
-       vector<T> result(length);
-       copy(data.begin(), data.end(), result.begin());
-       reverse(result.begin(), result.end());
-       Audio<T,chans> temp(channels, bitcount, samplingRate, result);
+      vector<T> result(length);
+      copy(data.begin(), data.end(), result.begin());
+      reverse(result.begin(), result.end());
+      Audio<T,chans> temp(channels, bitcount, samplingRate, result);
       return temp;
       
       
@@ -304,8 +305,8 @@ namespace MSHIMA001{
       transform(data.begin(), data.end(), result.begin(), functor);
       Audio<T,chans> temp(channels, bitcount, samplingRate, result);
       return temp;
-
-
+   
+   
       
       
    }
@@ -324,11 +325,11 @@ namespace MSHIMA001{
       }*/
    template <typename T, int chans>
    ostream& operator<<(ostream& head, const Audio<T, chans>& N ){
-
+   
       if(head){
          
       
-  
+      
          T unit;// 
          for(auto i=N.data.begin(); i!=N.data.end(); ++i){
          
@@ -352,9 +353,9 @@ namespace MSHIMA001{
    }
    template <typename T, int chans>
    istream& operator>>( istream& file,  Audio<T,chans>& N ){
-
+   
       if(file){
-  
+      
          file.seekg (0, file.end);
          int size = file.tellg();
          file.seekg (0, file.beg);
@@ -379,20 +380,21 @@ namespace MSHIMA001{
             std::cout << "error: only some ints could be read"<<endl;
          
          
-    
+      
          
         
         
         
       
-      }else{
+      }
+      else{
          cout<<"Unable to open file, ensure correct filename"<<endl;	
          	
       } 
       return file;  
    }
       
-     template<typename T, int chans>
+   template<typename T, int chans>
    bool Audio<T,chans>::operator==(const Audio<T, chans>& N) {
       if(length!=N.length| samplingRate != N.samplingRate | bitcount != N.bitcount| channels!= N.channels)
          return false;
@@ -406,44 +408,44 @@ namespace MSHIMA001{
    }
  
    
-     template<typename T, int chans>
-     T Normalise<T, chans>::operator()(void){
-         int check = in * f ;
-         if(check > (1<<sizeof(T))){
-               check = (1<<sizeof(T));
-         }
-         return T(check);
-     }
+   template<typename T, int chans>
+     T Normalise<T, chans>::operator()(T in){
+      long check = in * f ;
+      if(check > (1<<sizeof(T))){
+         check = (1<<sizeof(T));
+      }
+      return T(check);
+   }
      
      
 
 
    template<typename T > 
-   Audio<T>::Audio(){
+   Audio<T,2>::Audio(){
       channels = 2;
       bitcount = sizeof(T);
    }    
    template<typename T >
-   Audio<T>::Audio( string fileName){
+   Audio<T,2>::Audio( string fileName){
       load(fileName);
     
       
    }
-   template<typename T, >
-   Audio<T>::Audio(int chan, int bit, int samp, vector<pair<T,T>> t):channels(chan), bitcount(bit), samplingRate(samp), data(t){
+   template<typename T >
+   Audio<T,2>::Audio(int chan, int bit, int samp, vector<pair<T,T>> t):channels(chan), bitcount(bit), samplingRate(samp), data(t){
       length = t.size();
    }
-   template<typename T, >
-   Audio<T>::~Audio(){ // destructor
+   template<typename T >
+   Audio<T,2>::~Audio(){ // destructor
       
       channels = bitcount = samplingRate = 0;
-      data = NULL;
+      
    
    }
    
    //copy constructor
-   template<typename T, >
-   Audio<T>::Audio(const Audio<T>& N):channels(N.channels), bitcount(N.bitcount), samplingRate(N.samplingRate), length(N.length), data(N.data){
+   template<typename T >
+   Audio<T,2>::Audio(const Audio<T,2>& N):channels(N.channels), bitcount(N.bitcount), samplingRate(N.samplingRate), length(N.length), data(N.data){
       cout<<"In copy constructor"<<endl;
       cout<<"allocating memory"<<endl;
    
@@ -451,18 +453,18 @@ namespace MSHIMA001{
    }
    
    //move constructor
-   template<typename T, >
-   Audio<T>::Audio(Audio<T>&& N):channels(N.channels), bitcount(N.bitcount), samplingRate(N.samplingRate), length(N.length), data(N.data){
+   template<typename T >
+   Audio<T,2>::Audio(Audio<T,2>&& N):channels(N.channels), bitcount(N.bitcount), samplingRate(N.samplingRate), length(N.length), data(N.data){
       cout<<"In move "<<endl;
-         N.channels = N.bitcount = N.samplingRate = 0;
-         data= NULL;
+      N.channels = N.bitcount = N.samplingRate = 0;
+      data= NULL;
       
-  
+   
    }
    
    //assignment operator
-   template<typename T, >
-   Audio<T>& Audio<T>::operator=(const Audio<T>& N ){
+   template<typename T >
+   Audio<T,2>& Audio<T,2>::operator=(const Audio<T,2>& N ){
       if(this == &N)
          return *this;
     
@@ -475,10 +477,10 @@ namespace MSHIMA001{
       
    }
    //move assignment operator.
-   template<typename T, >
-   Audio<T>& Audio<T>::operator=(Audio<T>&& N){
+   template<typename T >
+   Audio<T,2>& Audio<T,2>::operator=(Audio<T,2>&& N){
       cout<<"in move op"<<endl;
-    if(this == &N)
+      if(this == &N)
          return *this;
        
       channels = N.channels;
@@ -489,12 +491,12 @@ namespace MSHIMA001{
       N.data.clear();
     
       return *this;
-
+   
    }
    
    //method to read input files
-   template<typename T, >
-   bool  Audio<T>::load(std::string fileName){
+   template<typename T >
+   bool  Audio<T,2>::load(std::string fileName){
       //initialise data members
       channels = 1;
       std::string s = fileName;
@@ -503,10 +505,10 @@ namespace MSHIMA001{
       size_t pos = 0;
       std::string token;
       
-       pos = s.find(delimiter);
+      pos = s.find(delimiter);
              
       s.erase(0, pos + delimiter.length());//firstpart of name
-
+   
       
       pos = s.find(delimiter);
       token = s.substr(0, pos);
@@ -515,23 +517,23 @@ namespace MSHIMA001{
       
       
       s.erase(0, pos + delimiter.length()); 
-            pos = s.find(delimiter);
+      pos = s.find(delimiter);
              
       s.erase(0, pos + delimiter.length());//signed
       
-        pos = s.find("b");
+      pos = s.find("b");
       token = s.substr(0, pos);
       istringstream ss1(token);
       ss1>>bitcount;
       
       ifstream file(fileName , ios::in |ios::binary);
       if(file){
-  
+      
          file.seekg (0, file.end);
          int size = file.tellg();
          file.seekg (0, file.beg);
          
-          length = size/(2*sizeof(T));
+         length = size/(2*sizeof(T));
          data.resize(length);
          
          //file.read((char*)&data[0], length);
@@ -541,32 +543,33 @@ namespace MSHIMA001{
             data.push_pack(make_pair(l,r));
          }
                   
-    
+      
          file.close();
         
          return true;
         
       
-      }else{
+      }
+      else{
          cout<<"Unable to open file, ensure correct filename"<<endl;	
          return false;	
       }
    
    }
-   template<typename T, >
-   void Audio<T>::save(std::string fileName ){
+   template<typename T >
+   void Audio<T,2>::save(std::string fileName ){
       cout<<"saving"<<endl;
       ofstream head(fileName, ios::out|ios::binary);
       if(head){
          
       
-  
+      
          pair<T, T> unit;// 
          for(auto i=data.begin();i!=data.end();++i){
          
             unit  = *i;
             head.write((char*)&(unit.first),1);
-           head.write((char*)&(unit.second),1);
+            head.write((char*)&(unit.second),1);
          }
       
       
@@ -579,8 +582,8 @@ namespace MSHIMA001{
    }
    
    
-   template<typename T, >
-   Audio<T> Audio<T>::operator+(const Audio<T>& N ){;
+   template<typename T >
+   Audio<T,2> Audio<T,2>::operator+(const Audio<T,2>& N ){;
       cout<<"Adding"<<endl;
    
       cout<<"copy construction"<<endl;
@@ -588,7 +591,7 @@ namespace MSHIMA001{
          cerr<< "Can't add these arrs, dimensions don't match"<<endl;
          return *this;
       }
-      Audio<T> temp(*this);//copy constructor
+      Audio<T,2> temp(*this);//copy constructor
    
       cout<<"iterators creating"<<endl;
       typename vector<pair<T,T>>::iterator beg = temp.data.begin(), end = temp.data.end();
@@ -603,16 +606,16 @@ namespace MSHIMA001{
          }
          
       
-         *beg.first = check; 
+         (*beg).first = check; 
          
-         int check = (*beg.second + *inStart.second);
+          check = (*beg.second + *inStart.second);
          if(check> (1<<sizeof(T))){
             check = (1<<sizeof(T)) ;
          }
          
       
-         *beg.second = check; 
-
+         (*beg).second = check; 
+      
       
          ++beg;
          ++inStart;
@@ -625,8 +628,8 @@ namespace MSHIMA001{
       
    
    }
-   template<typename T, >
-   Audio<T> Audio<T>::operator|(const Audio<T>& N ){
+   template<typename T >
+   Audio<T,2> Audio<T,2>::operator|(const Audio<T,2>& N ){
       if(N.channels != channels || N.length != length|| N.bitcount!= bitcount ){
          cerr<< "Can't append these arrs, dimensions don't match"<<endl;
          return *this;
@@ -635,15 +638,15 @@ namespace MSHIMA001{
       vector<pair<T,T>> result(2*length);
       copy ( data.begin(), data.end(), result.begin() );
       copy(N.data.begin(), N.data.end(), back_inserter(result));
-      Audio<T> temp(channels, bitcount, samplingRate, result);
-
+      Audio<T,2> temp(channels, bitcount, samplingRate, result);
+   
    
       return temp;
-
-  
+   
+   
    }
-   template<typename T, >
-   Audio<T> Audio<T>::operator^(pair<int, int> N ){
+   template<typename T >
+   Audio<T,2> Audio<T,2>::operator^(pair<int, int> N ){
       int m = N.first;
       int n = N.second;
       
@@ -651,69 +654,70 @@ namespace MSHIMA001{
       copy(data.begin() , data.begin()+ m, result.begin());
       copy(data.begin()+ n+1, data.end(), back_inserter(result));
       
-       Audio<T> temp(channels, bitcount, samplingRate, result);
+      Audio<T,2> temp(channels, bitcount, samplingRate, result);
       return temp;
       
         
         
    }
-   template<typename T, >
-   Audio<T> Audio<T>::operator*(pair<float, float> F){
+   template<typename T >
+   Audio<T,2> Audio<T,2>::operator*(pair<float, float> F){
       float factor = F.first;
       
-        vector<pair<T,T>> result(length);
+      vector<pair<T,T>> result(length);
       transform(data.begin(), data.end(), result.begin(), [factor](pair<T,T> x){return make_pair((T)((x.first)*factor), (T)((x.second)*factor));});
-      Audio<T> temp(channels, bitcount, samplingRate, result);
+      Audio<T,2> temp(channels, bitcount, samplingRate, result);
       return temp;
       
    
    }
-   template<typename T, >
-   Audio<T> Audio<T>::add(Audio<T>& N, pair<int, int>f){
-        int m = N.first;
-        int n = N.second;
-        vector<pair<T,T>> result(length);
+   template<typename T >
+   Audio<T,2> Audio<T,2>::add(Audio<T,2>& N, pair<int, int>f){
+      int m = f.first;
+      int n = f.second;
+      vector<pair<T,T>> result(length);
         
-        copy(N.begin()+m, N.begin() + n+1, result.begin()+m);
+      copy(N.data.begin()+m, N.data.begin() + n+1, result.begin()+m);
         
-        Audio<T> temp(channels, bitcount, samplingRate, result);
-        temp = *this + temp;
-        return temp;
+      Audio<T,2> temp(channels, bitcount, samplingRate, result);
+      temp = *this + temp;
+      return temp;
         
    }
-   template<typename T, >
-   Audio<T> Audio<T>::rev()
+   template<typename T >
+   Audio<T,2> Audio<T,2>::rev()
    {  
-       vector<pair<T,T>> result(length);
-       copy(data.begin(), data.end(), result.begin());
-       reverse(result.begin(), result.end());
-       Audio<T> temp(channels, bitcount, samplingRate, result);
+      vector<pair<T,T>> result(length);
+      copy(data.begin(), data.end(), result.begin());
+      reverse(result.begin(), result.end());
+      Audio<T,2> temp(channels, bitcount, samplingRate, result);
       return temp;
       
       
    }
-   template<typename T, >
-   double Audio<T>::rms(){
-      long product = std::accumulate(data.begin(), data.end(), 0, [](pair<T,T> x){return make_pair(x.first*x.first, x.second*x.second);});
-      double rms = sqrt(product/length);
-      return rms ;
+   template<typename T >
+   pair<double,double> Audio<T,2>::rms(){
+       pair<long, long> product = std::accumulate(data.begin(), data.end(), 0, [](pair<T,T> x){return make_pair(x.first*x.first, x.second*x.second);});
+      double rms1 = sqrt(product.first/length);
+      double rms2 = sqrt(product.second/length);
+      return make_pair<rms1, rms2> ;
      
       
       
    }
    
-   template<typename T, >
-   Audio<T> Audio<T>::norm(pair<float, float> f){
+   template<typename T >
+   Audio<T,2> Audio<T,2>::norm(pair<float, float> f){
       
       double rms = this->rms();
       vector<pair<T,T>> result(length);
       
-      Normalise<T> functor(f); 
+      Normalise<T,2> functor(f); 
       transform(data.begin(), data.end(), result.begin(), functor);
-      Audio<T> temp(channels, bitcount, samplingRate, result);
+      Audio<T,2> temp(channels, bitcount, samplingRate, result);
       return temp;
-
-
+   
+   
       
       
    }
@@ -730,20 +734,20 @@ namespace MSHIMA001{
             
       
       }*/
-   template <typename T, >
-   ostream& operator<<(ostream& head, const Audio<T>& N ){
-
+   template <typename T >
+   ostream& operator<<(ostream& head, const Audio<T,2>& N ){
+   
       if(head){
          
       
-  
+      
          pair<T,T> unit;// 
          for(auto i=N.data.begin(); i!=N.data.end(); ++i){
          
             unit  = *i;
             head.write((char*)&(unit.first),1);
-           head.write((char*)&(unit.second),1);
-
+            head.write((char*)&(unit.second),1);
+         
          }
       
       
@@ -760,11 +764,11 @@ namespace MSHIMA001{
    
    
    }
-   template <typename T, >
-   istream& operator>>( istream& file,  Audio<T>& N ){
-
+   template <typename T >
+   istream& operator>>( istream& file,  Audio<T,2>& N ){
+   
       if(file){
-  
+      
          file.seekg (0, file.end);
          int size = file.tellg();
          file.seekg (0, file.beg);
@@ -777,33 +781,35 @@ namespace MSHIMA001{
          
         
          T unit;// 
-         for(auto i=0; i<length; i++){
+         for(auto i=N.data.begin(); i!=N.data.end(); ++i){
          
-             T l,r;
-            file>>l>>r;
-            data.push_pack(make_pair(l,r));         }
-      }
+               
+            file.read((char*)&(i->first),1);  
+               
+            file.read((char*)&(i->second),1);      }
+      
          if (file)
             std::cout << "all characters read successfully."<<endl;
          else
             std::cout << "error: only some ints could be read"<<endl;
          
          
-    
+      
          
         
         
         
       
-      }else{
+      }
+      else{
          cout<<"Unable to open file, ensure correct filename"<<endl;	
          	
       } 
       return file;  
    }
       
-     template<typename T, >
-   bool Audio<T>::operator==(const Audio<T>& N) {
+   template<typename T >
+   bool Audio<T,2>::operator==(const Audio<T,2>& N) {
       if(length!=N.length| samplingRate != N.samplingRate | bitcount != N.bitcount| channels!= N.channels)
          return false;
       
@@ -816,19 +822,19 @@ namespace MSHIMA001{
    }
  
    
-     template<typename T, >
-     T Normalise<T>::operator()(void){
-         int check = in.first * f ;
-         if(check > (1<<sizeof(T))){
-               check = (1<<sizeof(T));
-         }
-         int check1 = in.second * f ;
-         if(check1 > (1<<sizeof(T))){
-               check1 = (1<<sizeof(T));
-         }
+   template<typename T >
+     pair<T,T> Normalise<T,2>::operator()(pair<T,T> in){
+      long check = in.first * f.first ;
+      if(check > (1<<sizeof(T))){
+         check = (1<<sizeof(T));
+      }
+      long check1 = in.second * f.second ;
+      if(check1 > (1<<sizeof(T))){
+         check1 = (1<<sizeof(T));
+      }
          
-         return make_pair(T(check), T(check1));
-     }
+      return make_pair(T(check), T(check1));
+   }
    
 
 
