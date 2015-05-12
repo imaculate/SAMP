@@ -671,7 +671,7 @@ namespace MSHIMA001{
    Audio<T,2> Audio<T,2>::operator^(pair<int, int> N ){
       int m = N.first;
       int n = N.second;
-      
+      cout<<m <<" to "<<n;
       vector<pair<T,T>> result(length + m - n-1);
       copy(data.begin() , data.begin()+ m, result.begin());
       copy(data.begin()+ n+1, data.end(), back_inserter(result));

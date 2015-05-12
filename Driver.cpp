@@ -160,7 +160,7 @@ int main(int argc, char**  argv) {
          }             
         
       }
-      else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-cut")==0)||string(argv[7]).compare("-cut")==0){
+      else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-v")==0)||string(argv[7]).compare("-v")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
          string stra= string(argv[(outfile?12:10)]);
@@ -246,14 +246,19 @@ int main(int argc, char**  argv) {
       else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-cut")==0)||string(argv[7]).compare("-cut")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
-         string stra= string(argv[(outfile?12:10)]);
+         string stra= string(argv[(outfile?10:8)]);
+         cout<<"Hooray cutting!"<<endl;
          
          int r1, r2;
          string s1, s2;
-         s1 = string(argv[10]);
+         s1 = string(argv[(outfile?11:9)]);
+        
          istringstream ss1(s1);
+         cout<<s1<<endl;
          ss1 >> r1;
-         s2 = string(argv[11]);
+         s2 = string(argv[(outfile?12:10)]);
+        
+      
          istringstream ss2(s2);
          ss2 >> r2;
          
@@ -334,7 +339,7 @@ int main(int argc, char**  argv) {
                
                Audio<int8_t, 1> a(stra);
                    
-           
+            
                a.rev();
                a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
                cout<<"Done"<<endl;
@@ -344,7 +349,7 @@ int main(int argc, char**  argv) {
                Audio<int16_t, 1> a(stra);
                 
                Audio<int16_t, 1> b;
-              a.rev();
+               a.rev();
                a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
                cout<<"Done"<<endl;
                return 0;
@@ -356,8 +361,8 @@ int main(int argc, char**  argv) {
                cout<<"Using stereo, 8 bit file"<<endl;
                Audio<int8_t,2> a(stra);
                
-                   cout<<"Now reversing"<<endl;   
-                a.rev();
+               cout<<"Now reversing"<<endl;   
+               a.rev();
                cout<<"Done reversing"<<endl;
                a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
                cout<<"Done"<<endl;
@@ -379,12 +384,10 @@ int main(int argc, char**  argv) {
       
          
       }
-      else  if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-rms")==0)||(string(argv[7]).compare("-rms")==0)){
+      else  if(string(argv[7]).compare("-rms")==0){
             //addition.
-         bool outfile = string(argv[7]).compare("-o")==0;
-         string stra= string(argv[(outfile?10:8)]);
-         
-         
+                  
+         string stra= string(argv[8]);
          
        
          cout<<"Creating first audio"<<endl;
