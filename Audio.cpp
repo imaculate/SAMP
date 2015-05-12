@@ -1,4 +1,4 @@
-#include "Audio.h"
+
 #include <string>
 #include <fstream>
 #include <sstream>
@@ -127,13 +127,13 @@ namespace MSHIMA001{
       if(file){
       
          file.seekg (0, file.end);
-         int size = file.tellg();
+        long size = file.tellg();
          file.seekg (0, file.beg);
          
          length = size/sizeof(T);
          data.resize(length);
          for(auto i =0; i < length; i++){
-            file.read((char*)&data[i], sizeof(T));
+            file.read((char*)&(data[i]), sizeof(T));
          }
          if (file)
             std::cout << "all characters read successfully."<<file.gcount()<<endl;
@@ -291,9 +291,11 @@ namespace MSHIMA001{
    }
    template<typename T, int chans>
    double Audio<T,chans>::rms(){
-     unsigned long long int product;
+     unsigned long long int product = 0;
       for(auto i = 0; i<length; i++){
-         product += (long)(data[i]) *  (long)(data[i]);
+         product += (data[i]) * (data[i]);
+       
+         
       }
       double rms = sqrt(product/length);
       return rms ;
@@ -553,7 +555,7 @@ namespace MSHIMA001{
             pair<T,T> pod;
          //file.read((char*)&data[0], length);
          for(int i = 0; i< length; i++){
-            T l,r;
+            //T l,r;
             //file>>l>>r;
             //cout<<"Left " <<(long)l<<"Right "<<(long)r<<endl;
             
@@ -722,10 +724,10 @@ namespace MSHIMA001{
        unsigned long long int product2 = 0;
       cout<<"Length is " << length<<endl;
       for(auto i = 0; i<length; i++){
-         product1 += (long)(data[i].first) *  (data[i].first);
-         product2 += (long)(data[i].second) *  (data[i].second);
-         cout<<"at position "<<i <<" product is "<<product1<<endl;
-         cout<<(long)(data[i].first)<<endl;
+         product1 += (data[i].first) *  (data[i].first);
+         product2 += (data[i].second) *  (data[i].second);
+         //cout<<"at position "<<i <<" product is "<<product1<<endl;
+         //cout<<(long)(data[i].first)<<endl;
       }
        
       double rms1 = sqrt(product1/(double)length);
