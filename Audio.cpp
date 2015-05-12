@@ -132,8 +132,9 @@ namespace MSHIMA001{
          
          length = size/sizeof(T);
          data.resize(length);
-         
-         file.read((char*)&data[0], length);
+         for(auto i =0; i < length; i++){
+            file.read((char*)&data[i], sizeof(T));
+         }
          if (file)
             std::cout << "all characters read successfully."<<file.gcount()<<endl;
          else
@@ -553,11 +554,12 @@ namespace MSHIMA001{
          //file.read((char*)&data[0], length);
          for(int i = 0; i< length; i++){
             T l,r;
-            file>>l>>r;
-            cout<<"Left " <<(long)l<<"Right "<<(long)r<<endl;
-            pod = make_pair(l,r);
+            //file>>l>>r;
+            //cout<<"Left " <<(long)l<<"Right "<<(long)r<<endl;
             
-            data.push_back(pod);
+            
+            file.read((char*)&(data[i].first),sizeof(T));
+                file.read((char*)&(data[i].second),sizeof(T));
          }
                   
       

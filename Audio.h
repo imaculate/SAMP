@@ -32,7 +32,7 @@ class Audio{
       int samplingRate;//eg 44100
       int bitcount;//8 or 16
       int channels;
-      int length; //length of file.
+      long length; //length of file.
       
       
       vector<T> data;
