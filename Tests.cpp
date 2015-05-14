@@ -4,6 +4,7 @@
 #include "catch.hpp"
 
 using namespace MSHIMA001;
+using namespace std;
 
 /*Move and copy semantics
 • Iterator and its operators (including boundary conditions)
@@ -12,98 +13,105 @@ using namespace MSHIMA001;
 appropriately.
 • [optionally] the filtering operator. Take special care to test the boundary
 conditions*/
-TEST_CASE( "testing on the test case u1, u2", "trial.txt") {
-   //generate random images.
-   unsigned char* buffer1 = new unsigned char[16];
-   for(int i = 0; i< 8; i++){
-        buffer1[i] = (rand()%95)  + 160;
-       //this should be in the upperhalf to be 255 after thresholding
-   }
-   for(int i = 8; i< 16; i++){
-       buffer1[i] = rand()%160 ;
-     
-      //this should be in the lowerhalf to be 0 after thresholding
-   }
-    Image m(4,4, buffer1);
-     cout<<"m1"<<endl;
-    Image m1 = m*160;
-    
-    unsigned char* buffer7 = new unsigned char[16];
-     for(int i = 0; i< 8; i++){
-        buffer7[i] = 255;
-       //this should be in the upperhalf to be 255 after thresholding
-   }
+TEST_CASE( "testing mono audio files ", "8 bit" ) {
    
-     for(int i = 8; i< 16; i++){
-        buffer7[i] = 0;
-       //this should be in the lowerhalf to be 255 after thresholding
-   }
-   cout<<"m7"<<endl;
-    Image m7(4,4, buffer7);
-    REQUIRE(m1== m7); //test for threshold using carefully generated random numbers.
-    
-    
-     cout<<"m2"<<endl;
-   Image m2 = !m1;// asssignment operator
-   
-    cout<<"m3"<<endl;
-   Image m3 = !m2;
-
-    REQUIRE( m3 == m1 );//test for invert, double invert returns the original one.
-    
-    
-     unsigned char* buffer0 = new unsigned char[16];
-   for(int i = 0; i< 16; i++){
-      buffer0[i] = 255;
-   }
-   Image u0(4,4, buffer0); // a white image
-   
-   cout<<"u"<<endl;
-   Image u (m + u0);//move constructor
-   
-  REQUIRE(u == u0);//test that addition wraps around 255
-   
-    cout<<"r"<<endl;
-   Image r(m2 + m1);
-   
-   REQUIRE(r == u0); //test for invert, an image plus its inverse gives the white image.
-   
-    
-   
-   unsigned char* buffer2 = new unsigned char[16];//generate a random image
-   for(int i = 0; i< 16; i++){
-      buffer2[i] = rand()% 255;
-   }
-   Image u1(4,4, buffer2);
-   
-   Image o1 = u1 / m1;
-    
-    
-     unsigned char* buffer3 = new unsigned char[16];
-   for(int i = 0; i< 16; i++){
-      buffer2[i] = rand()% 255;
-   }
-   Image u2(4,4, buffer3);
-   
-   Image o2 = u2 / m2;
-   
-   Image o3 = o1 + o2;//a mixture of u1 and u2 generated as suggested.
-   
-       
-       unsigned char* buffer8 = new unsigned char[16];
-   for(int i = 0; i< 16; i++){
-      buffer8[i] = 0;
-   }
-   Image u8(4,4, buffer8); // a black image
-   
-   Image u9 = u1 - u0;
-   REQUIRE(u9 == u8);//test that subtraction saturates to zero, any image - white   = black.
-   
-   
-    
-    //since test cases passed and they all used iterators, it is safe to assume that iterators also passed.
+      
+      vector<int8_t> v1{3, 78, 23, -67, 12, 4};
+      Audio<int8_t , 1> a1(1, 8, 2, v1);
+      
         
-   
+      vector<int8_t> v2{5, 60, 43, -70, 34, 12};
+      Audio<int8_t , 1> a2(1, 8, 2, v2);
+      
+      
+            
+      //additon
+      //expected sum 
+        vector<int8_t> v3{8, 127, 66, -127, 46, 16};
+
+      Audio<int8_t , 1> a3(1, 8, 2, v3);
+
+      Audio<int8_t, 1>  sum  = a1 + a2;
+      REQUIRE(sum == a3);
+
+      
+      //concatenate
+     
+        vector<int8_t> v4{3, 78, 23, -67, 12, 4, 5, 60, 43, -70, 34, 12};
+
+      Audio<int8_t , 1> a4(1, 8, 2, v4);
+
+      Audio<int8_t, 1>  cat  = a1|a2; 
+      
+      REQUIRE(cat == a4);
+
+      
+      
+      //cut
+      vector<int8_t> v5{3, 78, 23, 5, 60, 43, -70, 34, 12};
+
+      Audio<int8_t , 1> a5(1, 8, 2, v5);
+      
+      Audio<int8_t, 1>  cut  = cat^make_pair(3,5); 
+      
+      REQUIRE(cut == a5);
+      //range add
+      vector<int8_t> v6{3, 78,66,-127,46,4};
+
+      Audio<int8_t , 1> a6(1, 8, 2, v6);
+      
+      Audio<int8_t, 1>  radd  = a1.add(a2,make_pair(2,4)); 
+      
+      REQUIRE(radd == a6);
+      
+      //volume factor
+      
+      vector<int8_t> v7{2, 62,18,-53,9,3};
+
+      Audio<int8_t , 1> a7(1, 8, 2, v7);
+      
+      Audio<int8_t, 1>  vol  = a1*make_pair(0.8, 0.8); 
+      
+      REQUIRE(vol == a7);
+            
+      //reverse
+      
+      vector<int8_t> v9{4, 12,-67,23,78,3};
+
+      Audio<int8_t , 1> a9(1, 8, 2, v9);
+      
+      a1.rev(); 
+      
+      REQUIRE(a1 == a9);
+      
+      //rms
+      
+      double r = a1.rms();
+      
+      long prod = 0;
+      for(auto i = 0; i< 6; i++){
+         prod += v1[i]*v1[i];
+      }
+      double calcr = sqrt(prod/6);
+      REQUIRE(calcr == r);
+      
+      
+      
+      //normalise
+      
+      
+      vector<int8_t> v8{2, 62,18,-53,9,3};
+
+      Audio<int8_t , 1> a8(1, 8, 2, v8);
+      
+      Audio<int8_t, 1>  norm  = a1.norm(make_pair(30, 0.8)); 
+      
+     // REQUIRE(vol == a7);
+
+      //fade in
+      
+      
+      //fade out
 }
 
 

@@ -17,7 +17,7 @@ namespace MSHIMA001{
    template<typename T, int chans> 
    Audio<T,chans>::Audio(){
       channels = 1;
-      bitcount = sizeof(T);
+      bitcount = 8*sizeof(T);
    }    
    template<typename T, int chans>
    Audio<T,chans>::Audio( string fileName){
@@ -194,12 +194,17 @@ namespace MSHIMA001{
       auto beg = temp.data.begin(), end = temp.data.end();
       auto inStart = N.data.begin(), inEnd = N.data.end();
       cout<<"iterators created"<<endl;
+      
    
       while ( beg != end) { 
       
-         int check = (*beg + *inStart);
-         if(check> (1<<sizeof(T))){
-            check = (1<<sizeof(T)) ;
+         long check = (long)(*beg) + (*inStart);
+         cout<<"max "<<(1<<(bitcount-1))-1<<endl;
+         if(check>= (1<<(bitcount-1))-1){
+            check = ((1<<(bitcount-1))-1) ;
+         }
+         else if(check<= 1-(1<<(bitcount-1))){
+            check = 1-(1<<(bitcount-1)) ;
          }
          
       
@@ -324,7 +329,7 @@ namespace MSHIMA001{
    void Audio<T,chans>::fadein(double n){
     
       long long ramp = samplingRate * n;
-  
+   
       for_each(data.begin(), data.begin() + ramp+1 ,[ this, ramp](T x){ auto no = &x - &data[0];return  x*(no/(float)ramp);} );     
          
    }
@@ -332,8 +337,8 @@ namespace MSHIMA001{
       
    template<typename T, int chans>
       void Audio<T,chans>::fadeout(double n){
-          long long ramp = samplingRate * n;
- 
+      long long ramp = samplingRate * n;
+   
       for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](T x){ auto no = &x - &data[0];return  x*(1-(no/(float)ramp));} );
             
       
@@ -426,9 +431,14 @@ namespace MSHIMA001{
    template<typename T, int chans>
      T Normalise<T, chans>::operator()(T in){
       auto check = (in * f) /rms;
-      if(check >= (1<<sizeof(T))){
-         check = (1<<sizeof(T))-1;
+      int bitcount = 8* sizeof(T);
+      if(check>= (1<<(bitcount-1))-1){
+         check = ((1<<(bitcount-1))-1);
       }
+      else if(check<= 1-(1<<(bitcount-1))){
+         check = 1-(1<<(bitcount-1));
+      }
+   
       return T(check);
    }
      
@@ -628,19 +638,23 @@ namespace MSHIMA001{
    
       while ( beg != end) { 
       
-         int check = ((*beg).first + (*inStart).first);
-         if(check> (1<<sizeof(T))){
-            check = (1<<sizeof(T)) ;
+         long check = (long)((*beg).first + (*inStart).first);
+         if(check>= (1<<(bitcount-1))-1){
+            check = ((1<<(bitcount-1))-1) ;
          }
-         
+         else if(check<= 1-(1<<(bitcount-1))){
+            check = 1-(1<<(bitcount-1)) ;
+         }
       
          (*beg).first = check; 
          
          check = ((*beg).second + (*inStart).second);
-         if(check> (1<<sizeof(T))){
-            check = (1<<sizeof(T)) ;
+         if(check>= (1<<(bitcount-1))-1){
+            check = ((1<<(bitcount-1))-1);
          }
-         
+         else if(check<= 1-(1<<(bitcount-1))){
+            check = 1-(1<<(bitcount-1));
+         }
       
          (*beg).second = check; 
       
@@ -770,17 +784,17 @@ namespace MSHIMA001{
          
    }
 
-      template<typename T>
+   template<typename T>
       void Audio<T,2>::fadeout(double n){
          
       long long ramp = samplingRate * n;
      
       for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - &data[0];return  make_pair(x.first*(1-(no/(float)ramp)), x.second*(1-(no/(float)ramp)));} );
          
-
+   
             
       
-      }
+   }
    template <typename T >
    ostream& operator<<(ostream& head, const Audio<T,2>& N ){
    
@@ -872,12 +886,19 @@ namespace MSHIMA001{
    template<typename T >
      pair<T,T> Normalise<T,2>::operator()(pair<T,T> in){
       auto check = (in.first * f.first)/rms.first ;
-      if(check >= (1<<sizeof(T))){
-         check = (1<<sizeof(T))-1;
+      int bitcount = sizeof(T)* 8; //1 byte = 8 bits
+      if(check>= (1<<(bitcount-1))-1){
+         check = ((1<<(bitcount-1))-1);
+      }
+      else if(check<= 1-(1<<(bitcount-1))){
+         check = 1-(1<<(bitcount-1));
       }
       auto check1 = (long)(in.second * f.second /rms.second);
-      if(check1 >= (1<<sizeof(T))){
-         check1 = (1<<sizeof(T))-1;
+      if(check1>= (1<<(bitcount-1))-1){
+         check1 = ((1<<(bitcount-1))-1) ;
+      }
+      else if(check1<= 1-(1<<(bitcount-1))){
+         check1 = 1-(1<<(bitcount-1)) ;
       }
          
       return make_pair(T(check), T(check1));
