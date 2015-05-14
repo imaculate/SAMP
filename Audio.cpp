@@ -127,7 +127,7 @@ namespace MSHIMA001{
       if(file){
       
          file.seekg (0, file.end);
-        long size = file.tellg();
+         long size = file.tellg();
          file.seekg (0, file.beg);
          
          length = size/sizeof(T);
@@ -218,12 +218,12 @@ namespace MSHIMA001{
    }
    template<typename T, int chans>
    Audio<T,chans> Audio<T,chans>::operator|(const Audio<T, chans>& N ){
-      if(N.channels != channels || N.length != length|| N.bitcount!= bitcount ){
+      if(N.channels != channels || N.bitcount!= bitcount ){
          cerr<< "Can't append these arrs, dimensions don't match"<<endl;
          return *this;
       }
       
-      vector<T> result(2*length);
+      vector<T> result(length);
       copy ( data.begin(), data.end(), result.begin() );
       copy(N.data.begin(), N.data.end(), back_inserter(result));
       Audio<T,chans> temp(channels, bitcount, samplingRate, result);
@@ -244,7 +244,7 @@ namespace MSHIMA001{
       int m = N.first;
       int n = N.second;
       
-      vector<T> result(length + m - n-1);
+      vector<T> result(m);
       copy(data.begin() , data.begin()+ m, result.begin());
       copy(data.begin()+ n+1, data.end(), back_inserter(result));
       
@@ -291,7 +291,7 @@ namespace MSHIMA001{
    }
    template<typename T, int chans>
    double Audio<T,chans>::rms(){
-     unsigned long long int product = 0;
+      unsigned long long int product = 0;
       for(auto i = 0; i<length; i++){
          product += (data[i]) * (data[i]);
        
@@ -310,7 +310,7 @@ namespace MSHIMA001{
       double rms = this->rms();
       vector<T> result(length);
       
-      Normalise<T,chans> functor(out); 
+      Normalise<T,chans> functor(out, rms); 
       transform(data.begin(), data.end(), result.begin(), functor);
       Audio<T,chans> temp(channels, bitcount, samplingRate, result);
       return temp;
@@ -320,18 +320,24 @@ namespace MSHIMA001{
       
    }
    
-   /*void fadein(double n){
+   template<typename T, int chans>
+   void Audio<T,chans>::fadein(double n){
     
- 
-      for_each(data.begin(), data.end(), result.begin(),[samplingRate, n](x){return  } );
+      long long ramp = samplingRate * n;
+  
+      for_each(data.begin(), data.begin() + ramp+1 ,[ this, ramp](T x){ auto no = x - data.begin();return  x*(no/(float)ramp);} );     
          
    }
 
-  
-      void fadeout(double n){
+      
+   template<typename T, int chans>
+      void Audio<T,chans>::fadeout(double n){
+          long long ramp = samplingRate * n;
+ 
+      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](T x){ auto no = x - data.begin();return  x*(1-(no/(float)ramp));} );
             
       
-      }*/
+   }
    template <typename T, int chans>
    ostream& operator<<(ostream& head, const Audio<T, chans>& N ){
    
@@ -419,9 +425,9 @@ namespace MSHIMA001{
    
    template<typename T, int chans>
      T Normalise<T, chans>::operator()(T in){
-      long check = in * f ;
-      if(check > (1<<sizeof(T))){
-         check = (1<<sizeof(T));
+      auto check = (in * f) /rms;
+      if(check >= (1<<sizeof(T))){
+         check = (1<<sizeof(T))-1;
       }
       return T(check);
    }
@@ -442,7 +448,7 @@ namespace MSHIMA001{
    }
    template<typename T >
    Audio<T,2>::Audio(int chan, int bit, int samp, vector<pair<T,T>> t):channels(chan), bitcount(bit), samplingRate(samp), data(t){
-   cout<<"In constructor"<<endl;
+      cout<<"In constructor"<<endl;
       length = t.size();
    }
    template<typename T >
@@ -552,7 +558,7 @@ namespace MSHIMA001{
          cout<<"Length is "<<length<<endl;
          data.resize(length);
          cout<<"Vector resized"<<endl;
-            pair<T,T> pod;
+         pair<T,T> pod;
          //file.read((char*)&data[0], length);
          for(int i = 0; i< length; i++){
             //T l,r;
@@ -561,7 +567,7 @@ namespace MSHIMA001{
             
             
             file.read((char*)&(data[i].first),sizeof(T));
-                file.read((char*)&(data[i].second),sizeof(T));
+            file.read((char*)&(data[i].second),sizeof(T));
          }
                   
       
@@ -630,7 +636,7 @@ namespace MSHIMA001{
       
          (*beg).first = check; 
          
-          check = ((*beg).second + (*inStart).second);
+         check = ((*beg).second + (*inStart).second);
          if(check> (1<<sizeof(T))){
             check = (1<<sizeof(T)) ;
          }
@@ -652,12 +658,12 @@ namespace MSHIMA001{
    }
    template<typename T >
    Audio<T,2> Audio<T,2>::operator|(const Audio<T,2>& N ){
-      if(N.channels != channels || N.length != length|| N.bitcount!= bitcount ){
+      if(N.channels != channels || N.bitcount!= bitcount ){
          cerr<< "Can't append these arrs, dimensions don't match"<<endl;
          return *this;
       }
       
-      vector<pair<T,T>> result(2*length);
+      vector<pair<T,T>> result(length);
       copy ( data.begin(), data.end(), result.begin() );
       copy(N.data.begin(), N.data.end(), back_inserter(result));
       Audio<T,2> temp(channels, bitcount, samplingRate, result);
@@ -672,7 +678,7 @@ namespace MSHIMA001{
       int m = N.first;
       int n = N.second;
       cout<<m <<" to "<<n;
-      vector<pair<T,T>> result(length + m - n-1);
+      vector<pair<T,T>> result( m );
       copy(data.begin() , data.begin()+ m, result.begin());
       copy(data.begin()+ n+1, data.end(), back_inserter(result));
       
@@ -711,7 +717,7 @@ namespace MSHIMA001{
    
    {  
       cout<<"In reverse"<<endl;
-           cout<<"Using reverse algorithm"<<endl;
+      cout<<"Using reverse algorithm"<<endl;
       reverse(data.begin(), data.end());
       cout<<"Reversed!"<<endl;
             
@@ -721,7 +727,7 @@ namespace MSHIMA001{
    pair<double,double> Audio<T,2>::rms(){
      
       unsigned long long int product1=0; 
-       unsigned long long int product2 = 0;
+      unsigned long long int product2 = 0;
       cout<<"Length is " << length<<endl;
       for(auto i = 0; i<length; i++){
          product1 += (data[i].first) *  (data[i].first);
@@ -755,18 +761,26 @@ namespace MSHIMA001{
       
    }
    
-   /*void fadein(double n){
+   template<typename T>
+   void Audio<T,2>::fadein(double n){
     
- 
-      for_each(data.begin(), data.end(), result.begin(),[samplingRate, n](x){return  } );
+      long long ramp = samplingRate * n;
+      
+      for_each(data.begin(), data.begin() + (long)ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - data.begin();return  make_pair(x.first*(no/(float)ramp), x.second*(no/(float)ramp));} );
          
    }
 
-  
-      void fadeout(double n){
+      template<typename T>
+      void Audio<T,2>::fadeout(double n){
+         
+      long long ramp = samplingRate * n;
+     
+      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - data.begin();return  make_pair(x.first*(1-(no/(float)ramp)), x.second*(1-(no/(float)ramp)));} );
+         
+
             
       
-      }*/
+      }
    template <typename T >
    ostream& operator<<(ostream& head, const Audio<T,2>& N ){
    
@@ -857,13 +871,13 @@ namespace MSHIMA001{
    
    template<typename T >
      pair<T,T> Normalise<T,2>::operator()(pair<T,T> in){
-      long check = (long)(in.first * f.first/rms.first );
-      if(check > (1<<sizeof(T))){
-         check = (1<<sizeof(T));
+      auto check = (in.first * f.first)/rms.first ;
+      if(check >= (1<<sizeof(T))){
+         check = (1<<sizeof(T))-1;
       }
-      long check1 = (long)(in.second * f.second /rms.second);
-      if(check1 > (1<<sizeof(T))){
-         check1 = (1<<sizeof(T));
+      auto check1 = (long)(in.second * f.second /rms.second);
+      if(check1 >= (1<<sizeof(T))){
+         check1 = (1<<sizeof(T))-1;
       }
          
       return make_pair(T(check), T(check1));

@@ -83,8 +83,8 @@ class Audio{
       void rev();
       double rms();
       Audio norm(pair<float, float> f);
-      /*void fadein(double n);
-      void fadeout(double n);*/
+      void fadein(double n);
+      void fadeout(double n);
   
      };
      
@@ -92,9 +92,10 @@ class Audio{
      class Normalise{
          private:
             float f;
+            double rms;
             
         public:
-            Normalise(float out):f(out){};
+            Normalise(float out, double r):f(out), rms(r){};
             T operator()(T in);
             
          
@@ -167,8 +168,8 @@ class Audio<T,2>{
       void rev();
       pair<double,double> rms();
       Audio norm(pair<float, float> f);
-      /*void fadein(double n);
-      void fadeout(double n);*/
+      void fadein(double n);
+      void fadeout(double n);
   
      };
      

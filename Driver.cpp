@@ -163,14 +163,14 @@ int main(int argc, char**  argv) {
       else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-v")==0)||string(argv[7]).compare("-v")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
-         string stra= string(argv[(outfile?12:10)]);
+         string stra= string(argv[(outfile?10:8)]);
          
          float r1, r2;
          string s1,s2;
-         s1 = string(argv[10]);
+         s1 = string(argv[(outfile?11:9)]);
          istringstream ss1(s1);
          ss1>>r1;
-         s2 = string(argv[11]);
+         s2 = string(argv[(outfile?12:10)]);
          istringstream ss2(s2);
          ss2>>r2;
          string c = string(argv[6]);
@@ -437,17 +437,17 @@ int main(int argc, char**  argv) {
       else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-norm")==0)||(string(argv[7]).compare("-norm")==0)){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
-         string stra= string(argv[(outfile?12:10)]);
+         string stra= string(argv[(outfile?10:8)]);
          
-         int r1, r2;
+         float r1, r2;
          string sa , sb;
-         sa = string(argv[10]);
+         sa = string(argv[(outfile?11:9)]);
          istringstream ssa(sa);
          ssa>>r1;
-         sb = string(argv[11]);
+         sb = string(argv[(outfile?12:10)]);
          istringstream ssb(sb);
          ssb>>r2;
-         pair<int, int> f = make_pair(r1, r2);
+         pair<float, float> f = make_pair(r1, r2);
       
          string c = string(argv[6]);
          string channels = (c.compare("1")==0)?"mono":"stereo";
@@ -595,7 +595,165 @@ int main(int argc, char**  argv) {
          
                   
          
+      }  else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-fadein")==0)||(string(argv[7]).compare("-fadein")==0)){
+            //addition.
+         bool outfile = string(argv[7]).compare("-o")==0;
+         string stra= string(argv[(outfile?11:9)]);
+       
+         
+         double n;
+         string s;
+         s = string(argv[(outfile?10:8)]);
+         istringstream ss(s);
+         ss>>n;
+               
+         string c = string(argv[6]);
+         string channels = (c.compare("1")==0)?"mono":"stereo";
+         string name = outfile?string(argv[8]):"out";
+      
+         
+         
+       
+         if( string(argv[6]).compare("1")==0  ){
+            if(string(argv[4]).compare("8")==0){
+               Audio<int8_t, 1> a(stra);
+                                   
+                a.fadein(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+            }
+            else{
+               Audio<int16_t, 1> a(stra);
+              a.fadein(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+            
+            
+            }
+         }
+         else{
+            if(string(argv[4]).compare("8")==0){
+               Audio<int8_t,2> a(stra);
+           a.fadein(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+
+            
+            }
+            else{
+               Audio<int16_t,2> a(stra);
+             a.fadein(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+
+            
+            
+            }
+         
+            
+         }             
+      
+         
+                 
+         
+            
+         
+         
+                  
+         
+      } else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-fadeout")==0)||(string(argv[7]).compare("-fadeout")==0)){
+            //addition.
+         bool outfile = string(argv[7]).compare("-o")==0;
+         string stra= string(argv[(outfile?11:9)]);
+       
+         
+         double n;
+         string s;
+         s = string(argv[(outfile?10:8)]);
+         istringstream ss(s);
+         ss>>n;
+               
+         string c = string(argv[6]);
+         string channels = (c.compare("1")==0)?"mono":"stereo";
+         string name = outfile?string(argv[8]):"out";
+      
+         
+         
+       
+         if( string(argv[6]).compare("1")==0  ){
+            if(string(argv[4]).compare("8")==0){
+               Audio<int8_t, 1> a(stra);
+                                   
+                a.fadeout(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+            }
+            else{
+               Audio<int16_t, 1> a(stra);
+              a.fadeout(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+            
+            
+            }
+         }
+         else{
+            if(string(argv[4]).compare("8")==0){
+               Audio<int8_t,2> a(stra);
+           a.fadeout(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+
+            
+            }
+            else{
+               Audio<int16_t,2> a(stra);
+             a.fadeout(n);
+            
+               cout<<"Done"<<endl;
+               a.save(name + "_"+ string(argv[2])+ "_"+  string(argv[4])+ "_"+ channels+".raw");
+               return 0;
+            
+
+            
+            
+            }
+         
+            
+         }             
+      
+         
+                 
+         
+            
+         
+         
+                  
+         
       }
+      
+      
       
       
       
