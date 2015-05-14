@@ -310,8 +310,8 @@ namespace MSHIMA001{
    }
    
    template<typename T, int chans>
-   Audio<T,chans> Audio<T,chans>::norm(pair<float, float> f){
-      float  out = f.first;
+   Audio<T,chans> Audio<T,chans>::norm(pair<double, double> f){
+      double  out = f.first;
       double rms = this->rms();
       vector<T> result(length);
       
@@ -760,7 +760,7 @@ namespace MSHIMA001{
    }
    
    template<typename T >
-   Audio<T,2> Audio<T,2>::norm(pair<float, float> f){
+   Audio<T,2> Audio<T,2>::norm(pair<double, double> f){
       
       pair<double,double> rms = this->rms();
       vector<pair<T,T>> result(length);

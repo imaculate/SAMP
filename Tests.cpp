@@ -98,18 +98,27 @@ TEST_CASE( "testing mono audio files ", "8 bit" ) {
       
       
       //normalise
+      a1.rev(); //return to original audio
       
-      
-      vector<int8_t> v8{2, 62,18,-53,9,3};
+      vector<int8_t> v8{3*4, 127,23*4,-127,12*4,4*4};
 
       Audio<int8_t , 1> a8(1, 8, 2, v8);
       
-      Audio<int8_t, 1>  norm  = a1.norm(make_pair(30, 0.8)); 
+      Audio<int8_t, 1>  norm  = a1.norm(make_pair(4*r, 4*r)); 
       
-     // REQUIRE(vol == a7);
+     REQUIRE(norm == a8);
 
-      //fade in
+      //fade in+ copy constructor
+     
+      vector<int8_t> v10{0, 19, 8, -33, 7, 3, 4, 60, 43, -70, 34, 12};
+      Audio<int8_t , 1> a10(1, 8, 2, v10);
       
+       Audio<int8_t , 1> faded(a4);
+       faded.fadein(4);
+      
+       
+      
+     REQUIRE(faded == a10);
       
       //fade out
 }

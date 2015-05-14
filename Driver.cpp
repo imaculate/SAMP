@@ -439,7 +439,7 @@ int main(int argc, char**  argv) {
          bool outfile = string(argv[7]).compare("-o")==0;
          string stra= string(argv[(outfile?12:10)]);
          
-         float r1, r2;
+         double r1, r2;
          string sa , sb;
          sa = string(argv[(outfile?10:8)]);
          istringstream ssa(sa);
@@ -447,7 +447,7 @@ int main(int argc, char**  argv) {
          sb = string(argv[(outfile?11:9)]);
          istringstream ssb(sb);
          ssb>>r2;
-         pair<float, float> f = make_pair(r1, r2);
+         pair<double, double> f = make_pair(r1, r2);
       
          string c = string(argv[6]);
          string channels = (c.compare("1")==0)?"mono":"stereo";

@@ -82,7 +82,7 @@ class Audio{
       
       void rev();
       double rms();
-      Audio norm(pair<float, float> f);
+      Audio norm(pair<double, double> f);
       void fadein(double n);
       void fadeout(double n);
   
@@ -91,11 +91,11 @@ class Audio{
      template<typename T, int channels>
      class Normalise{
          private:
-            float f;
+            double f;
             double rms;
             
         public:
-            Normalise(float out, double r):f(out), rms(r){};
+            Normalise(double out, double r):f(out), rms(r){};
             T operator()(T in);
             
          
@@ -167,7 +167,7 @@ class Audio<T,2>{
       
       void rev();
       pair<double,double> rms();
-      Audio norm(pair<float, float> f);
+      Audio norm(pair<double, double> f);
       void fadein(double n);
       void fadeout(double n);
   
@@ -176,11 +176,11 @@ class Audio<T,2>{
      template<typename T>
      class Normalise<T,2>{
          private:
-            pair<float,float> f;
+            pair<double,double> f;
             pair<double, double> rms;
           
         public:
-            Normalise(pair<float, float> out, pair<double, double> r ):f(out),rms(r){};
+            Normalise(pair<double, double> out, pair<double, double> r ):f(out),rms(r){};
             pair<T,T> operator()(pair<T,T> in);
             
          
