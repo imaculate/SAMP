@@ -163,14 +163,14 @@ int main(int argc, char**  argv) {
       else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-v")==0)||string(argv[7]).compare("-v")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
-         string stra= string(argv[(outfile?10:8)]);
+         string stra= string(argv[(outfile?12:10)]);
          
          float r1, r2;
          string s1,s2;
-         s1 = string(argv[(outfile?11:9)]);
+         s1 = string(argv[(outfile?10:8)]);
          istringstream ss1(s1);
          ss1>>r1;
-         s2 = string(argv[(outfile?12:10)]);
+         s2 = string(argv[(outfile?11:9)]);
          istringstream ss2(s2);
          ss2>>r2;
          string c = string(argv[6]);
@@ -246,17 +246,17 @@ int main(int argc, char**  argv) {
       else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-cut")==0)||string(argv[7]).compare("-cut")==0){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
-         string stra= string(argv[(outfile?10:8)]);
+         string stra= string(argv[(outfile?12:10)]);
          cout<<"Hooray cutting!"<<endl;
          
          int r1, r2;
          string s1, s2;
-         s1 = string(argv[(outfile?11:9)]);
+         s1 = string(argv[(outfile?10:8)]);
         
          istringstream ss1(s1);
          cout<<s1<<endl;
          ss1 >> r1;
-         s2 = string(argv[(outfile?12:10)]);
+         s2 = string(argv[(outfile?11:9)]);
         
       
          istringstream ss2(s2);
@@ -437,14 +437,14 @@ int main(int argc, char**  argv) {
       else if((string(argv[7]).compare("-o")==0  && string(argv[9]).compare("-norm")==0)||(string(argv[7]).compare("-norm")==0)){
             //addition.
          bool outfile = string(argv[7]).compare("-o")==0;
-         string stra= string(argv[(outfile?10:8)]);
+         string stra= string(argv[(outfile?12:10)]);
          
          float r1, r2;
          string sa , sb;
-         sa = string(argv[(outfile?11:9)]);
+         sa = string(argv[(outfile?10:8)]);
          istringstream ssa(sa);
          ssa>>r1;
-         sb = string(argv[(outfile?12:10)]);
+         sb = string(argv[(outfile?11:9)]);
          istringstream ssb(sb);
          ssb>>r2;
          pair<float, float> f = make_pair(r1, r2);
@@ -515,10 +515,10 @@ int main(int argc, char**  argv) {
          
          float r1, r2;
          string s1, s2;
-         s1 = string(argv[10]);
+         s1 = string(argv[(outfile?10:8)]);
          istringstream ss1(s1);
          (ss1)>>(r1);
-         s2 = string(argv[11]);
+         s2 = string(argv[(outfile?11:9)]);
          istringstream ss2(s2);
          (ss2)>>(r2);
          pair<float, float> f = make_pair(r1, r2);

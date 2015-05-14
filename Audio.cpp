@@ -325,7 +325,7 @@ namespace MSHIMA001{
     
       long long ramp = samplingRate * n;
   
-      for_each(data.begin(), data.begin() + ramp+1 ,[ this, ramp](T x){ auto no = x - data.begin();return  x*(no/(float)ramp);} );     
+      for_each(data.begin(), data.begin() + ramp+1 ,[ this, ramp](T x){ auto no = &x - &data[0];return  x*(no/(float)ramp);} );     
          
    }
 
@@ -334,7 +334,7 @@ namespace MSHIMA001{
       void Audio<T,chans>::fadeout(double n){
           long long ramp = samplingRate * n;
  
-      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](T x){ auto no = x - data.begin();return  x*(1-(no/(float)ramp));} );
+      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](T x){ auto no = &x - &data[0];return  x*(1-(no/(float)ramp));} );
             
       
    }
@@ -766,7 +766,7 @@ namespace MSHIMA001{
     
       long long ramp = samplingRate * n;
       
-      for_each(data.begin(), data.begin() + (long)ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - data.begin();return  make_pair(x.first*(no/(float)ramp), x.second*(no/(float)ramp));} );
+      for_each(data.begin(), data.begin() + (long)ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - &data[0];return  make_pair(x.first*(no/(float)ramp), x.second*(no/(float)ramp));} );
          
    }
 
@@ -775,7 +775,7 @@ namespace MSHIMA001{
          
       long long ramp = samplingRate * n;
      
-      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - data.begin();return  make_pair(x.first*(1-(no/(float)ramp)), x.second*(1-(no/(float)ramp)));} );
+      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - &data[0];return  make_pair(x.first*(1-(no/(float)ramp)), x.second*(1-(no/(float)ramp)));} );
          
 
             
