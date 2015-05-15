@@ -120,9 +120,10 @@ class Audio<T,2>{
       int length; //length of file.
       
       
-      vector<pair<T,T>> data;
+      
  
    public:
+      vector<pair<T,T>> data;
       
       friend ostream& operator<< <T,2>(ostream& head, const Audio<T,2>& N );
      

@@ -132,6 +132,7 @@ namespace MSHIMA001{
          
          length = size/sizeof(T);
          data.resize(length);
+         bitcount = 8* sizeof(T);
          for(auto i =0; i < length; i++){
             file.read((char*)&(data[i]), sizeof(T));
          }
@@ -327,10 +328,11 @@ namespace MSHIMA001{
    
    template<typename T, int chans>
    void Audio<T,chans>::fadein(double n){
+      cout<<"Fade in method"<<endl;
     
       long long ramp = samplingRate * n;
-   
-      for_each(data.begin(), data.begin() + ramp+1 ,[ this, ramp](T x){ auto no = &x - &data[0];return  x*(no/(float)ramp);} );     
+      
+      for_each(data.begin(), data.begin() + ramp+1 ,[ this, ramp](T x){ auto no = (&x - &(data[0]))+1;return  x*(no/(float)ramp);} );     
          
    }
 
@@ -339,7 +341,7 @@ namespace MSHIMA001{
       void Audio<T,chans>::fadeout(double n){
       long long ramp = samplingRate * n;
    
-      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](T x){ auto no = &x - &data[0];return  x*(1-(no/(float)ramp));} );
+      for_each(data.begin(), data.begin() + ramp+1 ,[this, ramp](T x){ auto no = &x - &(data[0]);return  x*(1-(no/(float)ramp));} );
             
       
    }
@@ -448,7 +450,7 @@ namespace MSHIMA001{
    template<typename T > 
    Audio<T,2>::Audio(){
       channels = 2;
-      bitcount = sizeof(T);
+      bitcount = 8*sizeof(T);
    }    
    template<typename T >
    Audio<T,2>::Audio( string fileName){
@@ -636,6 +638,7 @@ namespace MSHIMA001{
       auto inStart = N.data.begin(), inEnd = N.data.end();
       cout<<"iterators created"<<endl;
    
+   
       while ( beg != end) { 
       
          long check = (long)((*beg).first + (*inStart).first);
@@ -705,9 +708,10 @@ namespace MSHIMA001{
    template<typename T >
    Audio<T,2> Audio<T,2>::operator*(pair<float, float> F){
       float factor = F.first;
+      float factor2 = F.second;
       
       vector<pair<T,T>> result(length);
-      transform(data.begin(), data.end(), result.begin(), [factor](pair<T,T> x){return make_pair((T)((x.first)*factor), (T)((x.second)*factor));});
+      transform(data.begin(), data.end(), result.begin(), [factor,factor2](pair<T,T> x){return make_pair((T)((x.first)*factor), (T)((x.second)*factor2));});
       Audio<T,2> temp(channels, bitcount, samplingRate, result);
       return temp;
       
@@ -779,7 +783,7 @@ namespace MSHIMA001{
    void Audio<T,2>::fadein(double n){
     
       long long ramp = samplingRate * n;
-      
+       
       for_each(data.begin(), data.begin() + (long)ramp+1 ,[this, ramp](pair<T,T> x){ auto no = &x - &data[0];return  make_pair(x.first*(no/(float)ramp), x.second*(no/(float)ramp));} );
          
    }
@@ -795,14 +799,15 @@ namespace MSHIMA001{
             
       
    }
-   template <typename T >
-   ostream& operator<<(ostream& head, const Audio<T,2>& N ){
    
+template <typename T>
+ostream& operator<<(ostream& head, const Audio<T,2>& N ){
+   
+      
       if(head){
          
       
-      
-         pair<T,T> unit;// 
+               pair<T,T> unit; 
          for(auto i=N.data.begin(); i!=N.data.end(); ++i){
          
             unit  = *i;
@@ -818,13 +823,9 @@ namespace MSHIMA001{
       }
       
       return head;
+  
    
-   
-   
-   
-   
-   
-   }
+}
    template <typename T >
    istream& operator>>( istream& file,  Audio<T,2>& N ){
    
